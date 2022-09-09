@@ -29,7 +29,7 @@ public class TrainsMain {
         Train amsterdamLondon = new Train(vanGogh, "Amsterdam", "London");
         amsterdamParis.splitAtPosition(4, amsterdamLondon);
         amsterdamLondon.reverse();
-        amsterdamLondon.insertAtFront((Wagon)(Object)new FreightWagon(9001, 50000));
+        amsterdamLondon.insertAtFront(new FreightWagon(9001, 50000));
         amsterdamParis.reverse();
         amsterdamParis.splitAtPosition(1, amsterdamLondon);
         amsterdamParis.attachToRear(amsterdamLondon.getLastWagonAttached());

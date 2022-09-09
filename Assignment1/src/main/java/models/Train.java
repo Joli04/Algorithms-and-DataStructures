@@ -1,10 +1,13 @@
 package models;
 
+import java.util.LinkedList;
+
 public class Train {
     private final String origin;
     private final String destination;
     private final Locomotive engine;
     private Wagon firstWagon;
+    private LinkedList<Wagon> wagons;
 
     /* Representation invariants:
         firstWagon == null || firstWagon.previousWagon == null
@@ -15,6 +18,7 @@ public class Train {
         this.engine = engine;
         this.destination = destination;
         this.origin = origin;
+        wagons = new LinkedList<>();
     }
 
     /* three helper methods that are usefull in other methods */
@@ -60,25 +64,21 @@ public class Train {
      *              (can be null)
      */
     public void setFirstWagon(Wagon wagon) {
-        // TODO
+        wagons.set(0,wagon);
     }
 
     /**
      * @return  the number of Wagons connected to the train
      */
     public int getNumberOfWagons() {
-        // TODO
-
-        return 0;
+        return wagons.size();
     }
 
     /**
      * @return  the last wagon attached to the train
      */
     public Wagon getLastWagonAttached() {
-        // TODO
-
-        return null;
+        return wagons.getLast();
     }
 
     /**
@@ -86,8 +86,14 @@ public class Train {
      *          (return 0 for a freight train)
      */
     public int getTotalNumberOfSeats() {
+        int totalSeats = 0;
+        for (int i = 0; i < wagons.size(); i++) {
+            if(wagons.get(i) instanceof PassengerWagon){
+                totalSeats += ((PassengerWagon) wagons.get(i)).getNumberOfSeats();
+            }
+        }
 
-        return 0;
+        return totalSeats;
     }
 
     /**
@@ -97,9 +103,13 @@ public class Train {
      *
      */
     public int getTotalMaxWeight() {
-        // TODO
-
-        return 0;
+        int totalWeight = 0;
+        for (int i = 0; i < wagons.size(); i++) {
+            if(wagons.get(i) instanceof FreightWagon){
+                totalWeight += ((FreightWagon) wagons.get(i)).getMaxWeight();
+            }
+        }
+        return totalWeight;
     }
 
      /**
@@ -109,9 +119,7 @@ public class Train {
      *          (return null if the position is not valid for this train)
      */
     public Wagon findWagonAtPosition(int position) {
-        // TODO
-
-        return null;
+        return wagons.get(position);
     }
 
     /**
@@ -121,8 +129,11 @@ public class Train {
      *          (return null if no wagon was found with the given wagonId)
      */
     public Wagon findWagonById(int wagonId) {
-        // TODO
-
+        for (int i = 0; i < wagons.size(); i++) {
+            if (wagons.get(i).getId() == wagonId) {
+                return wagons.get(i);
+            }
+        }
         return null;
     }
 
@@ -138,6 +149,7 @@ public class Train {
     public boolean canAttach(Wagon wagon) {
         // TODO
 
+
         return false;
     }
 
@@ -150,7 +162,7 @@ public class Train {
      * @return  whether the attachment could be completed successfully
      */
     public boolean attachToRear(Wagon wagon) {
-        // TODO
+        wagons.addLast(wagon);
 
         return false;
     }
@@ -165,7 +177,7 @@ public class Train {
      * @return  whether the insertion could be completed successfully
      */
     public boolean insertAtFront(Wagon wagon) {
-        // TODO
+        wagons.addFirst(wagon);
 
         return false;
     }
@@ -185,8 +197,7 @@ public class Train {
      * @return  whether the insertion could be completed successfully
      */
     public boolean insertAtPosition(int position, Wagon wagon) {
-        // TODO
-
+        wagons.add(position, wagon);
         return false;
     }
 
@@ -203,7 +214,6 @@ public class Train {
      */
     public boolean moveOneWagon(int wagonId, Train toTrain) {
         // TODO
-
         return false;
      }
 
@@ -237,4 +247,10 @@ public class Train {
     }
 
     // TODO string representation of a train
+
+    @Override
+
+    public String toString() {
+        return engine + "";
+    }
 }
