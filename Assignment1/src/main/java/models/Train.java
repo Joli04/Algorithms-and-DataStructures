@@ -65,7 +65,18 @@ public class Train {
      *              (can be null)
      */
     public void setFirstWagon(Wagon wagon) {
-        wagons.set(0, wagon);
+        if(wagons.size() == 0) {
+            wagons.set(0, wagon);
+        }
+
+        if(wagons.size() >= engine.getMaxWagons()){
+            throw new IndexOutOfBoundsException();
+        }
+
+
+        if(wagon==null){
+            return;
+        }
     }
 
     /**
