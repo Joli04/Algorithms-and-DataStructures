@@ -82,7 +82,6 @@ public abstract class Wagon {
         return count;
 
 
-//        return nextWagon.getSequenceLength()+1;
     }
 
     /**

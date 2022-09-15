@@ -7,7 +7,6 @@ public class Train {
     private final String destination;
     private final Locomotive engine;
     private Wagon firstWagon;
-    private LinkedList<Wagon> wagons;
 
     /* Representation invariants:
         firstWagon == null || firstWagon.previousWagon == null
@@ -18,11 +17,6 @@ public class Train {
         this.engine = engine;
         this.destination = destination;
         this.origin = origin;
-        wagons = new LinkedList<>();
-    }
-
-    public LinkedList<Wagon> getWagons() {
-        return wagons;
     }
 
     /* three helper methods that are useful in other methods */
@@ -63,19 +57,14 @@ public class Train {
      *              (can be null)
      */
     public void setFirstWagon(Wagon wagon) {
-//        if(wagons.size() >0 && (wagon instanceof PassengerWagon && isPassengerTrain()) ||
-//                wagon instanceof FreightWagon && isFreightTrain()){
-//            return;
-//        }
         firstWagon = wagon;
-        wagons.add(firstWagon);
     }
 
     /**
      * @return the number of Wagons connected to the train
      */
     public int getNumberOfWagons() {
-        return wagons.size();
+        return 0;
     }
 
     /**
@@ -83,10 +72,7 @@ public class Train {
      */
     public Wagon getLastWagonAttached() {
 
-        if(wagons.size() == 0){
-            return null;
-        }
-        return wagons.getLast();
+        return null;
     }
 
     /**
@@ -94,14 +80,7 @@ public class Train {
      * (return 0 for a freight train)
      */
     public int getTotalNumberOfSeats() {
-        int totalSeats = 0;
-        for (int i = 0; i < wagons.size(); i++) {
-            if (wagons.get(i) instanceof PassengerWagon) {
-                totalSeats += ((PassengerWagon) wagons.get(i)).getNumberOfSeats();
-            }
-        }
-
-        return totalSeats;
+        return 0;
     }
 
     /**
@@ -111,13 +90,7 @@ public class Train {
      * (return 0 for a passenger train)
      */
     public int getTotalMaxWeight() {
-        int totalWeight = 0;
-        for (int i = 0; i < wagons.size(); i++) {
-            if (wagons.get(i) instanceof FreightWagon) {
-                totalWeight += ((FreightWagon) wagons.get(i)).getMaxWeight();
-            }
-        }
-        return totalWeight;
+        return 0;
     }
 
     /**
@@ -129,10 +102,7 @@ public class Train {
      */
     public Wagon findWagonAtPosition(int position) {
 
-        if (position > wagons.size())
-            return null;
-
-        return wagons.get(position);
+        return null;
     }
 
     /**
@@ -143,11 +113,7 @@ public class Train {
      * (return null if no wagon was found with the given wagonId)
      */
     public Wagon findWagonById(int wagonId) {
-        for (int i = 0; i < wagons.size(); i++) {
-            if (wagons.get(i).getId() == wagonId) {
-                return wagons.get(i);
-            }
-        }
+
         return null;
     }
 
@@ -162,22 +128,6 @@ public class Train {
      * @return whether type and capacity of this train can accommodate attachment of the sequence
      */
     public boolean canAttach(Wagon wagon) {
-
-        for (int i = 0; i < wagons.size(); i++) {
-            if (wagon instanceof PassengerWagon || !(wagons.get(i) instanceof FreightWagon)) {
-                if (wagons.size() <= engine.getMaxWagons()) {
-                    if (!wagons.contains(wagon)) {
-                        return true;
-                    }
-                }
-            } else if (wagon instanceof FreightWagon || !(wagons.get(i) instanceof PassengerWagon)) {
-                if (wagons.size() <= engine.getMaxWagons()) {
-                    if (!wagons.contains(wagon)) {
-                        return true;
-                    }
-                }
-            }
-        }
         return false;
     }
 
@@ -191,16 +141,6 @@ public class Train {
      * @return whether the attachment could be completed successfully
      */
     public boolean attachToRear(Wagon wagon) {
-        if (wagons.size() > 0 && wagons.size() < engine.getMaxWagons()) {
-            if (wagon instanceof PassengerWagon && isPassengerTrain()||
-                    wagon instanceof FreightWagon && isFreightTrain()) {
-                wagons.addLast(wagon);
-                return true;
-            }
-        }
-        if (wagons.size() == 0) {
-            wagons.addLast(wagon);
-        }
         return false;
     }
 
@@ -215,16 +155,6 @@ public class Train {
      * @return whether the insertion could be completed successfully
      */
     public boolean insertAtFront(Wagon wagon) {
-        if (wagons.size() > 0 && wagons.size() < engine.getMaxWagons()) {
-            if ((wagon instanceof PassengerWagon && isPassengerTrain()) ||
-                    (wagon instanceof FreightWagon && isFreightTrain())) {
-                wagons.addFirst(wagon);
-                return true;
-            }
-        } else if (wagons.size() == 0) {
-            wagons.addFirst(wagon);
-            return true;
-        }
         return false;
     }
 
@@ -244,12 +174,6 @@ public class Train {
      * @return whether the insertion could be completed successfully
      */
     public boolean insertAtPosition(int position, Wagon wagon) {
-        if (wagons.size() < engine.getMaxWagons() && wagons.size() > 0 ||
-                wagon instanceof PassengerWagon && isPassengerTrain() ||
-                wagon instanceof FreightWagon &&isFreightTrain()) {
-            wagons.add(position, wagon);
-            return true;
-        }
         return false;
     }
 
@@ -284,9 +208,6 @@ public class Train {
      */
     public boolean splitAtPosition(int position, Train toTrain) {
         // TODO toTrain
-        for (int i = position + 1; i < wagons.size(); i++) {
-            wagons.removeLast();
-        }
         return false;
     }
 
@@ -300,6 +221,14 @@ public class Train {
     public void reverse() {
         // TODO
 
+
+//        for (int i = 0; i < wagons.size(); i++) {
+//            Wagon temp = wagons.get((i));
+//            temp = wagons.get(wagons.size() -1 -i);
+//            wagons.get(wagons.size() -1 -i) = temp;
+//        }
+
+
     }
 
     // TODO string representation of a train
@@ -307,6 +236,6 @@ public class Train {
     @Override
 
     public String toString() {
-        return engine + " with " + wagons.size() + " wagons from " + origin + " to " + destination;
+        return engine + " with " + " wagons from " + origin + " to " + destination;
     }
 }
