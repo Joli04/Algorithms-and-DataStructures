@@ -15,7 +15,6 @@ public abstract class Wagon {
     public Wagon(int wagonId) {
         this.id = wagonId;
     }
-
     public void setNextWagon(Wagon nextWagon) {
         if (nextWagon != null) {
             nextWagon.setPreviousWagon(this);

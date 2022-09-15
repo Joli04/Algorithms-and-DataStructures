@@ -129,8 +129,8 @@ public class TrainTest {
         assertEquals( 120000, freightTrain.getTotalMaxWeight());
 
         // check final wagon
-        assertEquals( 40, ((PassengerWagon)(Object)passengerTrain.getLastWagonAttached()).getNumberOfSeats());
-        assertEquals( 30000, ((FreightWagon)(Object)freightTrain.getLastWagonAttached()).getMaxWeight());
+        assertEquals( 40, ((PassengerWagon)passengerTrain.getLastWagonAttached()).getNumberOfSeats());
+        assertEquals( 30000, ((FreightWagon)freightTrain.getLastWagonAttached()).getMaxWeight());
         //System.out.println(passengerTrain);
 
         // check toString
@@ -159,9 +159,9 @@ public class TrainTest {
     @Test
     public void T15_findWagonOnTrainById() {
         // find by id
-        assertEquals(50000, ((FreightWagon)(Object)(freightTrain.findWagonById(9001))).getMaxWeight());
-        assertEquals(40000, ((FreightWagon)(Object)(freightTrain.findWagonById(9002))).getMaxWeight());
-        assertEquals(30000, ((FreightWagon)(Object)(freightTrain.findWagonById(9003))).getMaxWeight());
+        assertEquals(50000, ((FreightWagon)(freightTrain.findWagonById(9001))).getMaxWeight());
+        assertEquals(40000, ((FreightWagon)(freightTrain.findWagonById(9002))).getMaxWeight());
+        assertEquals(30000, ((FreightWagon)(freightTrain.findWagonById(9003))).getMaxWeight());
         assertNull(freightTrain.findWagonById(9000));
         assertNull(trainWithoutWagons.findWagonById(8000));
     }

@@ -64,7 +64,14 @@ public class Train {
      * @return the number of Wagons connected to the train
      */
     public int getNumberOfWagons() {
-        return 0;
+        int count = 0;
+        Wagon wagon = firstWagon;
+
+        while(wagon != null){
+            wagon = wagon.getNextWagon();
+            count++;
+        }
+        return count;
     }
 
     /**
@@ -72,6 +79,25 @@ public class Train {
      */
     public Wagon getLastWagonAttached() {
 
+        if (firstWagon == null) {
+            return null;
+        }
+
+        Wagon wagon = firstWagon;
+
+        while(wagon != null){
+            wagon = wagon.getNextWagon();
+            if(wagon.getNextWagon() == null){
+                return wagon;
+            }
+        }
+        //KIJKEN OF HIER IK NOG WAT MEE KAN
+//        Wagon next = firstWagon.getNextWagon();
+//        while (next != null) {
+//            firstWagon = next;
+//            next = firstWagon.getNextWagon();
+//        }
+//        return firstWagon;
         return null;
     }
 
@@ -80,7 +106,15 @@ public class Train {
      * (return 0 for a freight train)
      */
     public int getTotalNumberOfSeats() {
-        return 0;
+        Wagon wagon = firstWagon;
+        int total = 0;
+        while (wagon != null) {
+            if (isPassengerTrain()) {
+                total += ((PassengerWagon) wagon).getNumberOfSeats();
+            }
+            wagon = wagon.getNextWagon();
+        }
+        return total;
     }
 
     /**
@@ -90,7 +124,15 @@ public class Train {
      * (return 0 for a passenger train)
      */
     public int getTotalMaxWeight() {
-        return 0;
+        Wagon wagon = firstWagon;
+        int weight = 0;
+        while(wagon != null){
+            if(isFreightTrain()){
+                weight += ((FreightWagon) wagon).getMaxWeight();
+            }
+            wagon = wagon.getNextWagon();
+        }
+        return weight;
     }
 
     /**
@@ -101,7 +143,17 @@ public class Train {
      * (return null if the position is not valid for this train)
      */
     public Wagon findWagonAtPosition(int position) {
+        Wagon wagon = firstWagon;
 
+        int count = 1;
+        while(wagon != null){
+
+            if(count == position){
+                return wagon;
+            }
+            count++;
+            wagon = wagon.getNextWagon();
+        }
         return null;
     }
 
