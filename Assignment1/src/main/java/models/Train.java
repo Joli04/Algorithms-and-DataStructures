@@ -21,23 +21,21 @@ public class Train {
         wagons = new LinkedList<>();
     }
 
-    /* three helper methods that are usefull in other methods */
-    public boolean hasWagons() {
-        // TODO
+    public LinkedList<Wagon> getWagons() {
+        return wagons;
+    }
 
-        return false;
+    /* three helper methods that are useful in other methods */
+    public boolean hasWagons() {
+        return firstWagon != null;
     }
 
     public boolean isPassengerTrain() {
-        // TODO
-
-        return false;
+        return firstWagon instanceof PassengerWagon;
     }
 
     public boolean isFreightTrain() {
-        // TODO
-
-        return false;
+        return firstWagon instanceof FreightWagon;
     }
 
     public Locomotive getEngine() {
@@ -65,18 +63,12 @@ public class Train {
      *              (can be null)
      */
     public void setFirstWagon(Wagon wagon) {
-        if(wagons.size() == 0) {
-            wagons.set(0, wagon);
-        }
-
-        if(wagons.size() >= engine.getMaxWagons()){
-            throw new IndexOutOfBoundsException();
-        }
-
-
-        if(wagon==null){
-            return;
-        }
+//        if(wagons.size() >0 && (wagon instanceof PassengerWagon && isPassengerTrain()) ||
+//                wagon instanceof FreightWagon && isFreightTrain()){
+//            return;
+//        }
+        firstWagon = wagon;
+        wagons.add(firstWagon);
     }
 
     /**
@@ -90,6 +82,10 @@ public class Train {
      * @return the last wagon attached to the train
      */
     public Wagon getLastWagonAttached() {
+
+        if(wagons.size() == 0){
+            return null;
+        }
         return wagons.getLast();
     }
 
@@ -195,9 +191,9 @@ public class Train {
      * @return whether the attachment could be completed successfully
      */
     public boolean attachToRear(Wagon wagon) {
-        if (wagons.size() > 0) {
-            if (wagon instanceof PassengerWagon && wagons.get(0) instanceof PassengerWagon ||
-                    wagon instanceof FreightWagon && wagons.get(0) instanceof FreightWagon) {
+        if (wagons.size() > 0 && wagons.size() < engine.getMaxWagons()) {
+            if (wagon instanceof PassengerWagon && isPassengerTrain()||
+                    wagon instanceof FreightWagon && isFreightTrain()) {
                 wagons.addLast(wagon);
                 return true;
             }
@@ -220,8 +216,8 @@ public class Train {
      */
     public boolean insertAtFront(Wagon wagon) {
         if (wagons.size() > 0 && wagons.size() < engine.getMaxWagons()) {
-            if (wagon instanceof PassengerWagon && wagons.get(0) instanceof PassengerWagon ||
-                    wagon instanceof FreightWagon && wagons.get(0) instanceof FreightWagon) {
+            if ((wagon instanceof PassengerWagon && isPassengerTrain()) ||
+                    (wagon instanceof FreightWagon && isFreightTrain())) {
                 wagons.addFirst(wagon);
                 return true;
             }
@@ -249,8 +245,8 @@ public class Train {
      */
     public boolean insertAtPosition(int position, Wagon wagon) {
         if (wagons.size() < engine.getMaxWagons() && wagons.size() > 0 ||
-                wagon instanceof PassengerWagon && wagons.get(0) instanceof PassengerWagon ||
-                wagon instanceof FreightWagon && wagons.get(0) instanceof FreightWagon) {
+                wagon instanceof PassengerWagon && isPassengerTrain() ||
+                wagon instanceof FreightWagon &&isFreightTrain()) {
             wagons.add(position, wagon);
             return true;
         }
@@ -288,7 +284,7 @@ public class Train {
      */
     public boolean splitAtPosition(int position, Train toTrain) {
         // TODO toTrain
-        for (int i = position+1; i < wagons.size(); i++) {
+        for (int i = position + 1; i < wagons.size(); i++) {
             wagons.removeLast();
         }
         return false;

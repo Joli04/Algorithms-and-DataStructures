@@ -9,7 +9,6 @@ public class FreightWagon extends Wagon {
     }
 
     public int getMaxWeight() {
-        // TODO
         return maxWeight;
     }
 }

@@ -6,16 +6,25 @@ public abstract class Wagon {
     // a.k.a. the successor of this wagon in a sequence
     // set to null if no successor is connected
     private Wagon previousWagon;    // another wagon that is prepended at the front of this wagon
+
     // a.k.a. the predecessor of this wagon in a sequence
     // set to null if no predecessor is connected
-
-
     // representation invariant propositions:
     // tail-connection-invariant:   wagon.nextWagon == null or wagon == wagon.nextWagon.previousWagon
     // front-connection-invariant:  wagon.previousWagon == null or wagon = wagon.previousWagon.nextWagon
-
     public Wagon(int wagonId) {
         this.id = wagonId;
+    }
+
+    public void setNextWagon(Wagon nextWagon) {
+        if (nextWagon != null) {
+            nextWagon.setPreviousWagon(this);
+        }
+        this.nextWagon = nextWagon;
+    }
+
+    public void setPreviousWagon(Wagon previousWagon) {
+        this.previousWagon = previousWagon;
     }
 
     public int getId() {
@@ -52,11 +61,11 @@ public abstract class Wagon {
      */
     public Wagon getLastWagonAttached() {
 
-        if(this.nextWagon == null){
+        if (nextWagon == null) {
             return this;
         }
 
-        return null;
+        return nextWagon;
     }
 
     /**
@@ -65,8 +74,15 @@ public abstract class Wagon {
      */
     public int getSequenceLength() {
         // TODO traverse the sequence and find its length
+        setNextWagon(nextWagon);
+        int count = 0;
+        while (nextWagon != null) {
+            count++;
+        }
+        return count;
 
-        return 0;
+
+//        return nextWagon.getSequenceLength()+1;
     }
 
     /**
@@ -83,7 +99,11 @@ public abstract class Wagon {
      */
     public void attachTail(Wagon tail) {
         // TODO verify the exceptions
-
+        try {
+            nextWagon = tail;
+        } catch (IllegalStateException ex) {
+            ex.getStackTrace();
+        }
         // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
     }
 
@@ -97,7 +117,8 @@ public abstract class Wagon {
         // TODO detach the tail from this wagon (sustaining the invariant propositions).
         //  and return the head wagon of that tail
 
-        return null;
+
+        return getLastWagonAttached();
     }
 
     /**
@@ -124,6 +145,14 @@ public abstract class Wagon {
      */
     public void reAttachTo(Wagon front) {
         // TODO detach any existing connections that will be rearranged
+        if(front.nextWagon == null){
+
+        }
+
+        assert front.nextWagon != null;
+        if(front == front.nextWagon.previousWagon){
+
+        }
 
         // TODO attach this wagon to its new predecessor front (sustaining the invariant propositions).
     }
@@ -134,6 +163,7 @@ public abstract class Wagon {
      */
     public void removeFromSequence() {
         // TODO
+
     }
 
 
@@ -147,9 +177,13 @@ public abstract class Wagon {
     public Wagon reverseSequence() {
         // TODO provide an iterative implementation,
         //   using attach- and detach methods of this class
-
         return null;
     }
 
     // TODO string representation of a Wagon
+
+    @Override
+    public String toString() {
+        return String.format("[Wagon-%d]", id);
+    }
 }

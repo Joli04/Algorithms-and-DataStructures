@@ -52,7 +52,7 @@ public class WagonTest {
     @Test
     public void T02_APassengerWagonShouldReportCorrectProperties() {
         // check subclasses
-        assertFalse((Object)passengerWagon1 instanceof FreightWagon);
+        assertFalse(passengerWagon1 instanceof FreightWagon);
 
         // check properties
         assertEquals(8001, passengerWagon1.getId());
@@ -65,7 +65,7 @@ public class WagonTest {
     @Test
     public void T02_AFreightWagonShouldReportCorrectProperties() {
         // check subclasses
-        assertFalse((Object)freightWagon1 instanceof PassengerWagon);
+        assertFalse(freightWagon1 instanceof PassengerWagon);
 
         // check properties
         assertEquals(9001, freightWagon1.getId());
