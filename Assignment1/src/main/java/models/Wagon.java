@@ -15,6 +15,7 @@ public abstract class Wagon {
     public Wagon(int wagonId) {
         this.id = wagonId;
     }
+
     public void setNextWagon(Wagon nextWagon) {
         if (nextWagon != null) {
             nextWagon.setPreviousWagon(this);
@@ -59,7 +60,6 @@ public abstract class Wagon {
      * @return the last wagon
      */
     public Wagon getLastWagonAttached() {
-
         if (nextWagon == null) {
             return this;
         }
@@ -74,7 +74,7 @@ public abstract class Wagon {
     public int getSequenceLength() {
         // TODO traverse the sequence and find its length
         setNextWagon(nextWagon);
-        int count = 0;
+        int count = 1;
         while (nextWagon != null) {
             count++;
         }
@@ -96,13 +96,17 @@ public abstract class Wagon {
      *                               or:   "%s has already been attached to %s"
      */
     public void attachTail(Wagon tail) {
-        // TODO verify the exceptions
         try {
-            nextWagon = tail;
+            Wagon wagon = this;
+            if(wagon.nextWagon == null && tail.previousWagon == null){
+                previousWagon = wagon;
+                nextWagon = wagon.nextWagon;
+                wagon.nextWagon = tail;
+            }
+
         } catch (IllegalStateException ex) {
-            ex.getStackTrace();
+
         }
-        // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
     }
 
     /**
@@ -116,7 +120,7 @@ public abstract class Wagon {
         //  and return the head wagon of that tail
 
 
-        return getLastWagonAttached();
+        return getLastWagonAttached() ;
     }
 
     /**
@@ -143,12 +147,12 @@ public abstract class Wagon {
      */
     public void reAttachTo(Wagon front) {
         // TODO detach any existing connections that will be rearranged
-        if(front.nextWagon == null){
+        if (front.nextWagon == null) {
 
         }
 
         assert front.nextWagon != null;
-        if(front == front.nextWagon.previousWagon){
+        if (front == front.nextWagon.previousWagon) {
 
         }
 
