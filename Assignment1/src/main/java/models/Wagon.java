@@ -15,6 +15,7 @@ public abstract class Wagon {
     public Wagon(int wagonId) {
         this.id = wagonId;
     }
+
     public void setNextWagon(Wagon nextWagon) {
         if (nextWagon != null) {
             nextWagon.setPreviousWagon(this);
@@ -59,12 +60,19 @@ public abstract class Wagon {
      * @return the last wagon
      */
     public Wagon getLastWagonAttached() {
-
         if (nextWagon == null) {
             return this;
         }
+        Wagon wagon = nextWagon;
+        while (nextWagon != null) {
+            if (wagon.getNextWagon() == null) {
+                return wagon;
+            }
+            wagon = nextWagon.getNextWagon();
+            nextWagon = wagon;
+        }
 
-        return nextWagon;
+        return null;
     }
 
     /**
@@ -98,10 +106,30 @@ public abstract class Wagon {
     public void attachTail(Wagon tail) {
         // TODO verify the exceptions
         try {
-            nextWagon = tail;
-        } catch (IllegalStateException ex) {
-            ex.getStackTrace();
+            if (!hasNextWagon() || !tail.hasPreviousWagon()) {
+                nextWagon = tail;
+                tail.setPreviousWagon(this);
+            }
+        } catch (IllegalStateException e) {
+            if (hasPreviousWagon()) {
+                System.out.printf("%s is already pulling %s\n", this, tail);
+            } else {
+                System.out.printf("%s has already been attached to %s", this, tail);
+            }
         }
+
+//        if(this.hasNextWagon()){
+//            System.out.printf("%s has already been attached to %s", this, this.getNextWagon());
+//            throw new IllegalStateException();
+//        }
+//
+//        if(this.hasPreviousWagon()){
+//            System.out.printf("%s is already pulling %s", tail, tail.previousWagon);
+//            throw new IllegalStateException();
+//        }
+//
+//        this.nextWagon = tail;
+//        tail.previousWagon = this;
         // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
     }
 
@@ -143,12 +171,12 @@ public abstract class Wagon {
      */
     public void reAttachTo(Wagon front) {
         // TODO detach any existing connections that will be rearranged
-        if(front.nextWagon == null){
+        if (front.nextWagon == null) {
 
         }
 
         assert front.nextWagon != null;
-        if(front == front.nextWagon.previousWagon){
+        if (front == front.nextWagon.previousWagon) {
 
         }
 
