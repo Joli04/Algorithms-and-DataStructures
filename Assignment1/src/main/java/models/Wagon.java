@@ -63,16 +63,8 @@ public abstract class Wagon {
         if (nextWagon == null) {
             return this;
         }
-        Wagon wagon = nextWagon;
-        while (nextWagon != null) {
-            if (wagon.getNextWagon() == null) {
-                return wagon;
-            }
-            wagon = nextWagon.getNextWagon();
-            nextWagon = wagon;
-        }
 
-        return null;
+        return nextWagon;
     }
 
     /**
@@ -82,7 +74,7 @@ public abstract class Wagon {
     public int getSequenceLength() {
         // TODO traverse the sequence and find its length
         setNextWagon(nextWagon);
-        int count = 0;
+        int count = 1;
         while (nextWagon != null) {
             count++;
         }
@@ -104,33 +96,17 @@ public abstract class Wagon {
      *                               or:   "%s has already been attached to %s"
      */
     public void attachTail(Wagon tail) {
-        // TODO verify the exceptions
         try {
-            if (!hasNextWagon() || !tail.hasPreviousWagon()) {
-                nextWagon = tail;
-                tail.setPreviousWagon(this);
+            Wagon wagon = this;
+            if(wagon.nextWagon == null && tail.previousWagon == null){
+                previousWagon = wagon;
+                nextWagon = wagon.nextWagon;
+                wagon.nextWagon = tail;
             }
-        } catch (IllegalStateException e) {
-            if (hasPreviousWagon()) {
-                System.out.printf("%s is already pulling %s\n", this, tail);
-            } else {
-                System.out.printf("%s has already been attached to %s", this, tail);
-            }
-        }
 
-//        if(this.hasNextWagon()){
-//            System.out.printf("%s has already been attached to %s", this, this.getNextWagon());
-//            throw new IllegalStateException();
-//        }
-//
-//        if(this.hasPreviousWagon()){
-//            System.out.printf("%s is already pulling %s", tail, tail.previousWagon);
-//            throw new IllegalStateException();
-//        }
-//
-//        this.nextWagon = tail;
-//        tail.previousWagon = this;
-        // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
+        } catch (IllegalStateException ex) {
+
+        }
     }
 
     /**
@@ -144,7 +120,7 @@ public abstract class Wagon {
         //  and return the head wagon of that tail
 
 
-        return getLastWagonAttached();
+        return getLastWagonAttached() ;
     }
 
     /**
