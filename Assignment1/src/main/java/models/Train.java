@@ -256,11 +256,18 @@ public class Train {
      * @return whether the insertion could be completed successfully
      */
     public boolean insertAtPosition(int position, Wagon wagon) {
-        Wagon previous = findWagonAtPosition(position);
-        wagon.setNextWagon(previous.getNextWagon());
-        previous.setNextWagon(wagon);
-//        previous.setPreviousWagon();
+        if(canAttach(wagon)) {
+            Wagon previousWagon = findWagonAtPosition(position);
+            wagon.setNextWagon(previousWagon.getNextWagon());
+            previousWagon.setNextWagon(wagon);
+            previousWagon.setPreviousWagon(previousWagon);
 
+            if(wagon == null){
+
+            }
+
+            return true;
+        }
     return false;
     }
 

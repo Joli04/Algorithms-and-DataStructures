@@ -16,12 +16,12 @@ public class WagonTest {
     @BeforeEach
     public void setup() {
         Locale.setDefault(Locale.ENGLISH);
-        passengerWagon1 = (Wagon)(Object)new PassengerWagon(8001, 36);
-        passengerWagon2 = (Wagon)(Object)new PassengerWagon(8002, 18);
-        passengerWagon3 = (Wagon)(Object)new PassengerWagon(8003, 48);
-        passengerWagon4 = (Wagon)(Object)new PassengerWagon(8004, 44);
-        freightWagon1 = (Wagon)(Object)new FreightWagon(9001, 50000);
-        freightWagon2 = (Wagon)(Object)new FreightWagon(9002, 60000);
+        passengerWagon1 = new PassengerWagon(8001, 36);
+        passengerWagon2 = new PassengerWagon(8002, 18);
+        passengerWagon3 = new PassengerWagon(8003, 48);
+        passengerWagon4 = new PassengerWagon(8004, 44);
+        freightWagon1 = new FreightWagon(9001, 50000);
+        freightWagon2 = new FreightWagon(9002, 60000);
     }
 
     @AfterEach
