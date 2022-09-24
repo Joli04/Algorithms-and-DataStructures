@@ -18,8 +18,6 @@ public class Locomotive {
 
     @Override
     public String toString() {
-        return "locNumber=" + locNumber +
-                ", maxWagons=" + maxWagons +
-                '}';
+        return String.format("[Loc-%d]", this.locNumber);
     }
 }

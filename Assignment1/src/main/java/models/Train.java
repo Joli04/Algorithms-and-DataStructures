@@ -1,5 +1,7 @@
 package models;
 
+import java.util.ArrayList;
+
 /**
  * @author Joli-Coeur Weibolt and Vincent Ohr
  */
@@ -58,11 +60,11 @@ public class Train {
      */
     public int getNumberOfWagons() {
         int numberOfWagons = 0;
-        Wagon currentWagon = firstWagon;
+        Wagon wagon = firstWagon;
 
-        while (currentWagon != null) {
+        while (wagon != null) {
             numberOfWagons++;
-            currentWagon = currentWagon.getNextWagon();
+            wagon = wagon.getNextWagon();
         }
         return numberOfWagons;
     }
@@ -414,12 +416,31 @@ public class Train {
 
 
     }
-
-    // TODO string representation of a train
-
     @Override
-
     public String toString() {
-        return engine + " with " + " wagons from " + origin + " to " + destination;
+        Wagon currentWagon = firstWagon;
+        ArrayList<Wagon> wagons = new ArrayList<>();
+
+        //loops through all wagons and add them tho the arraylist
+        while (currentWagon != null) {
+            wagons.add(currentWagon);
+            currentWagon = currentWagon.getNextWagon();
+        }
+        //Makes the arrayList to string.
+        String wagonsArrayToString = wagons.toString();
+        //removes all whitespaces
+        String removeAllWhiteSpace = wagonsArrayToString.replaceAll("\\s", "");
+        //replaces all commas with whitespaces
+        String replaceAllCommas = removeAllWhiteSpace.replace(',', ' ');
+        //removes the first and last bracket from the string.
+        String removeFirstAndLastBracket = replaceAllCommas.substring(
+                replaceAllCommas.indexOf("[")+1, replaceAllCommas.lastIndexOf("]")
+        );
+        // prints the result
+        String finalText = String.format(
+                "%s %s with %d wagons from %s to %s", engine, removeFirstAndLastBracket,
+                this.getNumberOfWagons(), origin, destination);
+
+        return finalText;
     }
 }
