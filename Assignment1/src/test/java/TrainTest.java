@@ -22,34 +22,38 @@ public class TrainTest {
         Locomotive rembrandt = new Locomotive(24531, 8);
         passengerTrain = new Train(rembrandt, "Amsterdam", "Paris");
         Wagon wagon;
-        passengerWagon8001 = new PassengerWagon(8001,32);
+        passengerWagon8001 = new PassengerWagon(8001, 32);
         passengerTrain.setFirstWagon(passengerWagon8001);
-        passengerWagon8002 = new PassengerWagon(8002,32);
+        passengerWagon8002 = new PassengerWagon(8002, 32);
         passengerWagon8001.attachTail(passengerWagon8002);
-        passengerWagon8002.attachTail(new PassengerWagon(8003,18)); wagon = passengerWagon8002.getNextWagon();
-        wagon.attachTail(new PassengerWagon(8004,44)); wagon = wagon.getNextWagon();
-        wagon.attachTail(new PassengerWagon(8005,44)); wagon = wagon.getNextWagon();
-        wagon.attachTail(new PassengerWagon(8006,44)); wagon = wagon.getNextWagon();
-        wagon.attachTail(new PassengerWagon(8007,40));
+        passengerWagon8002.attachTail(new PassengerWagon(8003, 18));
+        wagon = passengerWagon8002.getNextWagon();
+        wagon.attachTail(new PassengerWagon(8004, 44));
+        wagon = wagon.getNextWagon();
+        wagon.attachTail(new PassengerWagon(8005, 44));
+        wagon = wagon.getNextWagon();
+        wagon.attachTail(new PassengerWagon(8006, 44));
+        wagon = wagon.getNextWagon();
+        wagon.attachTail(new PassengerWagon(8007, 40));
 
         Locomotive vanGogh = new Locomotive(29123, 7);
         trainWithoutWagons = new Train(vanGogh, "Amsterdam", "London");
 
         Locomotive clusius = new Locomotive(63427, 50);
         freightTrain = new Train(clusius, "Amsterdam", "Berlin");
-        freightWagon9001 = new FreightWagon(9001,50000);
+        freightWagon9001 = new FreightWagon(9001, 50000);
         freightTrain.setFirstWagon(freightWagon9001);
-        freightWagon9002 = new FreightWagon(9002,40000);
+        freightWagon9002 = new FreightWagon(9002, 40000);
         freightWagon9001.attachTail(freightWagon9002);
-        freightWagon9002.attachTail(new FreightWagon(9003,30000));
+        freightWagon9002.attachTail(new FreightWagon(9003, 30000));
 
-        passengerWagon1 = new PassengerWagon(8011,50);
-        passengerWagon2 = new PassengerWagon(8012,50);
-        passengerWagon3 = new PassengerWagon(8013,50);
+        passengerWagon1 = new PassengerWagon(8011, 50);
+        passengerWagon2 = new PassengerWagon(8012, 50);
+        passengerWagon3 = new PassengerWagon(8013, 50);
         passengerWagon1.attachTail(passengerWagon2);
         passengerWagon2.attachTail(passengerWagon3);
-        freightWagon1 = new FreightWagon(9011,60000);
-        freightWagon2 = new FreightWagon(9012,60000);
+        freightWagon1 = new FreightWagon(9011, 60000);
+        freightWagon2 = new FreightWagon(9012, 60000);
         freightWagon1.attachTail(freightWagon2);
     }
 
@@ -63,6 +67,7 @@ public class TrainTest {
         checkRepresentationInvariant(passengerTrain);
         checkRepresentationInvariant(freightTrain);
     }
+
     public static void checkRepresentationInvariant(Train train) {
         // TODO check all aspects of the representation invariant of a train and its wagons
 
@@ -91,7 +96,7 @@ public class TrainTest {
     @Test
     public void T11_AFreightTrainIsNotAPassengerTrain() {
         freightTrain = new Train(new Locomotive(13, 13), "Here", "There");
-        freightTrain.setFirstWagon((Wagon)(Object)new FreightWagon(1313, 1300));
+        freightTrain.setFirstWagon((Wagon) (Object) new FreightWagon(1313, 1300));
         assertFalse(freightTrain.isPassengerTrain());
         assertTrue(freightTrain.isFreightTrain());
     }
@@ -121,16 +126,16 @@ public class TrainTest {
 
     @Test
     public void T13_checkCumulativeWagonPropertiesOnTrain() {
-        assertEquals( 254, passengerTrain.getTotalNumberOfSeats());
-        assertEquals( 0, trainWithoutWagons.getTotalNumberOfSeats());
-        assertEquals( 0, freightTrain.getTotalNumberOfSeats());
-        assertEquals( 0, passengerTrain.getTotalMaxWeight());
-        assertEquals( 0, trainWithoutWagons.getTotalMaxWeight());
-        assertEquals( 120000, freightTrain.getTotalMaxWeight());
+        assertEquals(254, passengerTrain.getTotalNumberOfSeats());
+        assertEquals(0, trainWithoutWagons.getTotalNumberOfSeats());
+        assertEquals(0, freightTrain.getTotalNumberOfSeats());
+        assertEquals(0, passengerTrain.getTotalMaxWeight());
+        assertEquals(0, trainWithoutWagons.getTotalMaxWeight());
+        assertEquals(120000, freightTrain.getTotalMaxWeight());
 
         // check final wagon
-        assertEquals( 40, ((PassengerWagon)passengerTrain.getLastWagonAttached()).getNumberOfSeats());
-        assertEquals( 30000, ((FreightWagon)freightTrain.getLastWagonAttached()).getMaxWeight());
+        assertEquals(40, ((PassengerWagon) passengerTrain.getLastWagonAttached()).getNumberOfSeats());
+        assertEquals(30000, ((FreightWagon) freightTrain.getLastWagonAttached()).getMaxWeight());
         //System.out.println(passengerTrain);
 
         // check toString
@@ -141,27 +146,27 @@ public class TrainTest {
     public void T14_findWagonOnTrainAtPosition() {
 
         // find by position
-        assertEquals(8001, passengerTrain.findWagonAtPosition(1).getId(),"First wagon should be found");
-        assertEquals(8002, passengerTrain.findWagonAtPosition(2).getId(),"Second wagon should be found");
-        assertEquals(8007, passengerTrain.findWagonAtPosition(7).getId(),"Last wagon should be found");
-        assertNull(passengerTrain.findWagonAtPosition(8),"No wagon should be found beyond last position");
-        assertNull(passengerTrain.findWagonAtPosition(0),"No wagon should be found before first position");
-        assertNull(trainWithoutWagons.findWagonAtPosition(1),"No wagon should be found beyond last position");
+        assertEquals(8001, passengerTrain.findWagonAtPosition(1).getId(), "First wagon should be found");
+        assertEquals(8002, passengerTrain.findWagonAtPosition(2).getId(), "Second wagon should be found");
+        assertEquals(8007, passengerTrain.findWagonAtPosition(7).getId(), "Last wagon should be found");
+        assertNull(passengerTrain.findWagonAtPosition(8), "No wagon should be found beyond last position");
+        assertNull(passengerTrain.findWagonAtPosition(0), "No wagon should be found before first position");
+        assertNull(trainWithoutWagons.findWagonAtPosition(1), "No wagon should be found beyond last position");
 
         // extra tests 28 oct 2021
-        assertNull(passengerTrain.findWagonAtPosition(9),"No wagon should be found beyond last position");
-        assertNull(passengerTrain.findWagonAtPosition(-1),"No wagon should be found before first position");
-        assertNull(trainWithoutWagons.findWagonAtPosition(2),"No wagon should be found beyond last position");
-        assertNull(trainWithoutWagons.findWagonAtPosition(0),"No wagon should be found before first position");
-        assertNull(trainWithoutWagons.findWagonAtPosition(-1),"No wagon should be found before first position");
+        assertNull(passengerTrain.findWagonAtPosition(9), "No wagon should be found beyond last position");
+        assertNull(passengerTrain.findWagonAtPosition(-1), "No wagon should be found before first position");
+        assertNull(trainWithoutWagons.findWagonAtPosition(2), "No wagon should be found beyond last position");
+        assertNull(trainWithoutWagons.findWagonAtPosition(0), "No wagon should be found before first position");
+        assertNull(trainWithoutWagons.findWagonAtPosition(-1), "No wagon should be found before first position");
     }
 
     @Test
     public void T15_findWagonOnTrainById() {
         // find by id
-        assertEquals(50000, ((FreightWagon)(freightTrain.findWagonById(9001))).getMaxWeight());
-        assertEquals(40000, ((FreightWagon)(freightTrain.findWagonById(9002))).getMaxWeight());
-        assertEquals(30000, ((FreightWagon)(freightTrain.findWagonById(9003))).getMaxWeight());
+        assertEquals(50000, ((FreightWagon) (freightTrain.findWagonById(9001))).getMaxWeight());
+        assertEquals(40000, ((FreightWagon) (freightTrain.findWagonById(9002))).getMaxWeight());
+        assertEquals(30000, ((FreightWagon) (freightTrain.findWagonById(9003))).getMaxWeight());
         assertNull(freightTrain.findWagonById(9000));
         assertNull(trainWithoutWagons.findWagonById(8000));
     }
@@ -391,5 +396,18 @@ public class TrainTest {
 
         trainWithoutWagons.reverse();
         assertEquals(0, trainWithoutWagons.getNumberOfWagons());
+    }
+
+    @DisplayName("Insert different wagons")
+    @Test
+    public void test() {
+        assertEquals(7, passengerTrain.getNumberOfWagons());
+        Wagon passengerWagon = new PassengerWagon(8022, 1000);
+        Wagon freightWagon = new FreightWagon(7019, 20000);
+        // +1 wagon
+        passengerTrain.insertAtFront(passengerWagon);
+        // try to assign a freight wagon to passenger wagon
+        passengerTrain.insertAtFront(freightWagon);
+        assertEquals(8, passengerTrain.getNumberOfWagons());
     }
 }

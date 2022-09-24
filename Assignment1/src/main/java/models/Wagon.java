@@ -79,7 +79,7 @@ public abstract class Wagon {
         Wagon currentWagon = this;
         while (currentWagon.hasNextWagon()) {
             lengthOfWagons++;
-            currentWagon = currentWagon.nextWagon;
+            currentWagon = currentWagon.getNextWagon();
         }
         return lengthOfWagons;
     }

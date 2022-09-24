@@ -358,4 +358,23 @@ public class WagonTest {
         assertEquals(passengerWagon1, passengerWagon2.getPreviousWagon());
         assertEquals(passengerWagon4, passengerWagon2.getNextWagon());
     }
+
+    @DisplayName("Attach/Detach")
+    @Test
+    public void test2() {
+        passengerWagon1 = new PassengerWagon(8001, 36);
+        // not yet attached
+        assertNull(passengerWagon1.detachTail());
+
+        passengerWagon1.attachTail(passengerWagon2);
+
+        // wagon does have a tail wagon
+        assertEquals(passengerWagon2, passengerWagon1.detachTail());
+        assertEquals(passengerWagon1, passengerWagon1.getLastWagonAttached());
+
+        passengerWagon1.attachTail(passengerWagon2);
+        passengerWagon3.attachTail(passengerWagon4);
+        System.out.println(passengerWagon1.getSequenceLength());
+        System.out.println(passengerWagon4.getSequenceLength());
+    }
 }
