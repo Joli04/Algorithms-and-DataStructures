@@ -55,13 +55,13 @@ public class TrainTest {
 
     @AfterEach
     public void checkRepresentationInvariants() {
-//        WagonTest.checkRepresentationInvariant(passengerWagon1);
-//        WagonTest.checkRepresentationInvariant(passengerWagon2);
-//        WagonTest.checkRepresentationInvariant(passengerWagon3);
-//        WagonTest.checkRepresentationInvariant(freightWagon1);
-//        WagonTest.checkRepresentationInvariant(freightWagon2);
-//        checkRepresentationInvariant(passengerTrain);
-//        checkRepresentationInvariant(freightTrain);
+        WagonTest.checkRepresentationInvariant(passengerWagon1);
+        WagonTest.checkRepresentationInvariant(passengerWagon2);
+        WagonTest.checkRepresentationInvariant(passengerWagon3);
+        WagonTest.checkRepresentationInvariant(freightWagon1);
+        WagonTest.checkRepresentationInvariant(freightWagon2);
+        checkRepresentationInvariant(passengerTrain);
+        checkRepresentationInvariant(freightTrain);
     }
     public static void checkRepresentationInvariant(Train train) {
         // TODO check all aspects of the representation invariant of a train and its wagons

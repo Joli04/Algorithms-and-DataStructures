@@ -1,5 +1,8 @@
 package models;
 
+/**
+ * @author Joli-Coeur Weibolt and Vincent Ohr
+ */
 public abstract class Wagon {
     protected int id;               // some unique ID of a Wagon
     private Wagon nextWagon;        // another wagon that is appended at the tail of this wagon
@@ -60,21 +63,11 @@ public abstract class Wagon {
      * @return the last wagon
      */
     public Wagon getLastWagonAttached() {
-        if (nextWagon == null) {
-            return this;
+        Wagon currentWagon = this;
+        while (currentWagon.hasNextWagon()) {
+            currentWagon = currentWagon.getNextWagon();
         }
-
-        Wagon wagon = nextWagon;
-
-        while(nextWagon != null){
-            if(wagon.getNextWagon() == null){
-                return wagon;
-            }
-            wagon = nextWagon.getNextWagon();
-            nextWagon = wagon;
-        }
-
-        return null;
+        return currentWagon;
     }
 
     /**
@@ -82,13 +75,13 @@ public abstract class Wagon {
      * including this wagon itself.
      */
     public int getSequenceLength() {
-        int count = 1;
-        Wagon wagon = this;
-        while(wagon.hasNextWagon()){
-            count++;
-            wagon = wagon.nextWagon;
+        int lengthOfWagons = 1;
+        Wagon currentWagon = this;
+        while (currentWagon.hasNextWagon()) {
+            lengthOfWagons++;
+            currentWagon = currentWagon.nextWagon;
         }
-        return count;
+        return lengthOfWagons;
     }
 
     /**
@@ -104,28 +97,18 @@ public abstract class Wagon {
      *                               or:   "%s has already been attached to %s"
      */
     public void attachTail(Wagon tail) {
-//        try {
-//           if(!hasNextWagon() || !tail.hasPreviousWagon()){
-//               nextWagon = tail;
-//               tail.setPreviousWagon(this);
-//           }
-//
-//        } catch (IllegalStateException ex) {
-//            if(hasPreviousWagon()){
-//                System.out.printf("%s is already pulling %s", this, tail);
-//            } else {
-//                System.out.printf("%s has already neem attached to %s", this, tail);
-//            }
-//        }
 
         if (this.hasNextWagon()) {
-            throw new IllegalStateException(this + " is already pulling " + this.getNextWagon().toString());
-        }
-        if (tail.hasPreviousWagon()) {
-            throw new IllegalStateException(tail + " has already been attached to " + tail.getPreviousWagon().toString());
+            throw new IllegalStateException(
+                    String.format("%s is already pulling %s", this, this.getNextWagon().toString())
+            );
+        } else if (tail.hasPreviousWagon()) {
+            throw new IllegalStateException(
+                    String.format("%s has already been attached to %s", tail, tail.getPreviousWagon().toString())
+            );
         } else {
-            tail.setPreviousWagon(this);
             this.setNextWagon(tail);
+            tail.setPreviousWagon(this);
         }
     }
 
@@ -136,14 +119,14 @@ public abstract class Wagon {
      * or <code>null</code> if it had no wagons attached to its tail.
      */
     public Wagon detachTail() {
-        if(nextWagon == null) {
+        if (nextWagon == null) {
             return null;
         }
 
-        Wagon tail = nextWagon;
-        tail.previousWagon = null;
+        Wagon tailWagon = nextWagon;
+        tailWagon.previousWagon = null;
         this.nextWagon = null;
-        return tail;
+        return tailWagon;
     }
 
     /**
@@ -154,16 +137,13 @@ public abstract class Wagon {
      * or <code>null</code> if it had no previousWagon.
      */
     public Wagon detachFront() {
-        // TODO detach this wagon from its predecessor (sustaining the invariant propositions).
-        //   and return that predecessor
-        if(previousWagon == null){
+        if (previousWagon == null) {
             return null;
         }
-
-        Wagon head = previousWagon;
-        head.setNextWagon(null);
+        Wagon headWagon = previousWagon;
+        headWagon.setNextWagon(null);
         previousWagon = null;
-        return head;
+        return headWagon;
     }
 
     /**
@@ -175,11 +155,9 @@ public abstract class Wagon {
      * @param front the wagon to which this wagon must be attached to.
      */
     public void reAttachTo(Wagon front) {
-        // TODO detach any existing connections that will be rearranged
         this.detachFront();
         front.detachTail();
         front.attachTail(this);
-        // TODO attach this wagon to its new predecessor front (sustaining the invariant propositions).
     }
 
     /**
@@ -187,18 +165,16 @@ public abstract class Wagon {
      * and reconnects its tail to the wagon in front of it, if any.
      */
     public void removeFromSequence() {
-        // TODO
 
-        if(this.hasNextWagon() && this.hasPreviousWagon()){
-            this.getNextWagon().reAttachTo(this.previousWagon);
+        if (hasNextWagon() && hasPreviousWagon()) {
+            getNextWagon().reAttachTo(previousWagon);
         }
 
-        if(this.hasNextWagon()){
+        if (hasNextWagon()) {
             detachTail();
-
         }
 
-        if(this.hasPreviousWagon()){
+        if (hasPreviousWagon()) {
             detachFront();
         }
     }
@@ -212,12 +188,27 @@ public abstract class Wagon {
      * @return the new start Wagon of the reversed sequence (with is the former last Wagon of the original sequence)
      */
     public Wagon reverseSequence() {
-        // TODO provide an iterative implementation,
-        //   using attach- and detach methods of this class
-        return null;
-    }
+        Wagon headWagon = null;
+        Wagon currentWagon = this;
 
-    // TODO string representation of a Wagon
+        if (currentWagon.hasPreviousWagon()) {
+            headWagon = currentWagon.getPreviousWagon();
+            headWagon.detachTail();
+        }
+        do {
+            Wagon previousWagon = currentWagon.getPreviousWagon();
+            currentWagon.setPreviousWagon(currentWagon.getNextWagon());
+            currentWagon.setNextWagon(previousWagon);
+            if (currentWagon.getPreviousWagon() != null) {
+                currentWagon = currentWagon.getPreviousWagon();
+            }
+        } while (currentWagon.getPreviousWagon() != null);
+
+        if (headWagon != null) {
+            headWagon.attachTail(currentWagon);
+        }
+        return currentWagon;
+    }
 
     @Override
     public String toString() {

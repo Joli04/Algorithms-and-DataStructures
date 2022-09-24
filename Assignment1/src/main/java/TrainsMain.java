@@ -1,16 +1,7 @@
 import models.*;
-
-import java.util.LinkedList;
 import java.util.Locale;
 
 public class TrainsMain {
-
-    private Wagon firstWagon;
-
-    public TrainsMain() {
-
-    }
-
     public static void main(String[] args) {
         Locale.setDefault(Locale.ENGLISH);
 

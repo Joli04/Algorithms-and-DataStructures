@@ -121,11 +121,9 @@ public class WagonTest {
                 "A wagon with three attachments should report a sequenceLength=4");
     }
 
-
     @Test
     public void T05_AttachTailCanOnlyConnectHeadWagons() {
         passengerWagon1.attachTail(passengerWagon2);
-
         Throwable t;
 
         t = assertThrows(IllegalStateException.class,
