@@ -196,12 +196,12 @@ public abstract class Wagon {
             headWagon.detachTail();
         }
         do {
-            Wagon previousWagon = currentWagon.getPreviousWagon();
-            currentWagon.setPreviousWagon(currentWagon.getNextWagon());
-            currentWagon.setNextWagon(previousWagon);
             if (currentWagon.getPreviousWagon() != null) {
                 currentWagon = currentWagon.getPreviousWagon();
             }
+            Wagon previousWagon = currentWagon.getPreviousWagon();
+            currentWagon.setPreviousWagon(currentWagon.getNextWagon());
+            currentWagon.setNextWagon(previousWagon);
         } while (currentWagon.getPreviousWagon() != null);
 
         if (headWagon != null) {
