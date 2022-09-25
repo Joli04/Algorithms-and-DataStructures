@@ -359,7 +359,7 @@ public class WagonTest {
         assertEquals(passengerWagon4, passengerWagon2.getNextWagon());
     }
 
-    @DisplayName("Attach/Detach")
+    @DisplayName("T11_Attach/Detach")
     @Test
     public void test2() {
         passengerWagon1 = new PassengerWagon(8001, 36);
@@ -374,7 +374,5 @@ public class WagonTest {
 
         passengerWagon1.attachTail(passengerWagon2);
         passengerWagon3.attachTail(passengerWagon4);
-        System.out.println(passengerWagon1.getSequenceLength());
-        System.out.println(passengerWagon4.getSequenceLength());
     }
 }

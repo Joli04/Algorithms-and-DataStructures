@@ -398,7 +398,7 @@ public class TrainTest {
         assertEquals(0, trainWithoutWagons.getNumberOfWagons());
     }
 
-    @DisplayName("Insert different wagons")
+    @DisplayName("T23_insertDifferentWagons")
     @Test
     public void test() {
         assertEquals(7, passengerTrain.getNumberOfWagons());

@@ -425,18 +425,12 @@ public class Train {
     @Override
     public String toString() {
         Wagon currentWagon = firstWagon;
-        ArrayList<Wagon> wagons = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
 
         //loops through all wagons and add them tho the arraylist
         while (currentWagon != null) {
-            wagons.add(currentWagon);
-            currentWagon = currentWagon.getNextWagon();
-
-            if(currentWagon == null) {
-                break;
-            }
             builder.append(currentWagon);
+            currentWagon = currentWagon.getNextWagon();
         }
 
         return String.format("%s%s with %d wagons from %s to %s",
