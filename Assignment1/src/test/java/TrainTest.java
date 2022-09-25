@@ -388,7 +388,7 @@ public class TrainTest {
 
         // check type compatibility and loc capacity
         passengerTrain.reverse();
-//        assertEquals(7, passengerTrain.getNumberOfWagons());
+        assertEquals(7, passengerTrain.getNumberOfWagons());
         assertEquals(8007, passengerTrain.findWagonAtPosition(1).getId());
         assertEquals(8006, passengerTrain.findWagonAtPosition(2).getId());
         assertEquals(8005, passengerTrain.findWagonAtPosition(3).getId());
@@ -400,14 +400,29 @@ public class TrainTest {
 
     @DisplayName("T23_insertDifferentWagons")
     @Test
-    public void test() {
+    public void insertAttach() {
         assertEquals(7, passengerTrain.getNumberOfWagons());
-        Wagon passengerWagon = new PassengerWagon(8022, 1000);
+        System.out.println(passengerTrain.getTotalNumberOfSeats());
+        Wagon passengerWagon10 = new PassengerWagon(8022, 1000);
+
+
         Wagon freightWagon = new FreightWagon(7019, 20000);
-        // +1 wagon
-        passengerTrain.insertAtFront(passengerWagon);
         // try to assign a freight wagon to passenger wagon
         passengerTrain.insertAtFront(freightWagon);
+        assertEquals(7, passengerTrain.getNumberOfWagons());
+        // +1 wagon
+        passengerTrain.insertAtFront(passengerWagon10);
         assertEquals(8, passengerTrain.getNumberOfWagons());
+
+
+        Wagon passengerWagon11 = new PassengerWagon(8022, 1500);
+        passengerTrain.attachToRear(passengerWagon11);
+        Wagon passengerWagon12 = new PassengerWagon(8022, 1750);
+        passengerTrain.attachToRear(passengerWagon12);
+        Wagon passengerWagon13 = new PassengerWagon(8022, 2250);
+        passengerTrain.attachToRear(passengerWagon13);
+
+        //passengerWagon11, passengerWagon12, passengerWagon13 are not included because wagon limit is reached
+        assertEquals(1254, passengerTrain.getTotalNumberOfSeats());
     }
 }

@@ -361,7 +361,7 @@ public class WagonTest {
 
     @DisplayName("T11_Attach/Detach")
     @Test
-    public void test2() {
+    public void AttachDetail() {
         passengerWagon1 = new PassengerWagon(8001, 36);
         // not yet attached
         assertNull(passengerWagon1.detachTail());
@@ -373,6 +373,19 @@ public class WagonTest {
         assertEquals(passengerWagon1, passengerWagon1.getLastWagonAttached());
 
         passengerWagon1.attachTail(passengerWagon2);
-        passengerWagon3.attachTail(passengerWagon4);
+        passengerWagon4.attachTail(passengerWagon3);
+
+        assertEquals(1, passengerWagon3.getSequenceLength());
+
+        Wagon passengerWagon007 = new PassengerWagon(7, 777);
+        assertEquals(7, passengerWagon007.getId());
+
+        passengerWagon2.attachTail(passengerWagon007);
+        passengerWagon007.attachTail(passengerWagon4);
+        assertEquals(5, passengerWagon2.getPreviousWagon().getSequenceLength());
+
+        assertTrue(passengerWagon007.hasNextWagon() && passengerWagon007.hasPreviousWagon());
+        passengerWagon4.reAttachTo(passengerWagon1);
+        assertFalse(passengerWagon007.hasNextWagon() && passengerWagon007.hasPreviousWagon());
     }
 }

@@ -1,7 +1,5 @@
 package models;
 
-import java.util.ArrayList;
-
 /**
  * @author Joli-Coeur Weibolt and Vincent Ohr
  */
@@ -405,20 +403,13 @@ public class Train {
 
         Wagon nextWagon = firstWagon.getNextWagon();
         while (!firstWagon.equals(lastWagon) && !nextWagon.equals(lastWagon)) {
-            int previousWagonId = firstWagon.id;
+            int previousWagonId = firstWagon.getId();
 
-            firstWagon.id = lastWagon.id;
+            firstWagon.id = lastWagon.getId();
             lastWagon.id = previousWagonId;
             firstWagon = firstWagon.getNextWagon();
             lastWagon = lastWagon.getPreviousWagon();
         }
-
-        //INFINITE LOOP IN TRAINSMAIN
-//        if (this.hasWagons()) {
-//            this.setFirstWagon(this.firstWagon.reverseSequence());
-//        }
-
-
 
     }
 
