@@ -26,6 +26,7 @@ public class TrafficTracker {
 
     /**
      * imports all registered cars from a resource file that has been provided by the RDW
+     *
      * @param resourceName
      */
     public void importCarsFromVault(String resourceName) {
@@ -45,14 +46,15 @@ public class TrafficTracker {
     /**
      * imports and merges all raw detection data of all entry gates of all cities from the hierarchical file structure of the vault
      * accumulates any offences against purple rules into this.violations
+     *
      * @param resourceName
      */
     public void importDetectionsFromVault(String resourceName) {
         this.violations.clear();
 
         int totalNumberOfOffences =
-            this.mergeDetectionsFromVaultRecursively(
-                    createFileFromURL(TrafficTracker.class.getResource(resourceName)));
+                this.mergeDetectionsFromVaultRecursively(
+                        createFileFromURL(TrafficTracker.class.getResource(resourceName)));
 
         System.out.printf("Found %d offences among detections imported from files in %s.\n",
                 totalNumberOfOffences, resourceName);
@@ -60,6 +62,7 @@ public class TrafficTracker {
 
     /**
      * traverses the detections vault recursively and processes every data file that it finds
+     *
      * @param file
      */
     private int mergeDetectionsFromVaultRecursively(File file) {
@@ -74,7 +77,6 @@ public class TrafficTracker {
             //  also track the total number of offences found
 
 
-
         } else if (file.getName().matches(TRAFFIC_FILE_PATTERN)) {
             // the file is a regular file that matches the target pattern for raw detection files
             // process the content of this file and merge the offences found into this.violations
@@ -87,6 +89,7 @@ public class TrafficTracker {
     /**
      * imports another batch detection data from the filePath text file
      * and merges the offences into the earlier imported and accumulated violations
+     *
      * @param file
      */
     private int mergeDetectionsFromFile(File file) {
@@ -101,7 +104,6 @@ public class TrafficTracker {
         //  using the importItemsFromFile helper method and the Detection.fromLine parser.
 
 
-
         System.out.printf("Imported %d detections from %s.\n", newDetections.size(), file.getPath());
 
         int totalNumberOfOffences = 0; // tracks the number of offences that emerges from the data in this file
@@ -111,31 +113,46 @@ public class TrafficTracker {
         //  also keep track of the totalNumberOfOffences for reporting
 
 
-
-
         return totalNumberOfOffences;
     }
 
     /**
      * calculates the total revenue of fines from all violations,
      * Trucks pay €25 per offence, Coaches €35 per offence
-     * @return      the total amount of money recovered from all violations
+     *
+     * @return the total amount of money recovered from all violations
      */
     public double calculateTotalFines() {
 
+
         return this.violations.aggregate(
+
                 // TODO provide a calculator function for the specified fine scheme
                 //  of €25 per truck-offence and €35 per coach-offence
+                violation -> {
+                    double truckOffence = 25;
+                    double coachOffence = 35;
+                    double totalFines = 0;
+                    boolean isCoach = violation.getCar().getCarType().equals(Car.CarType.Coach);
+                    boolean isTruck = violation.getCar().getCarType().equals(Car.CarType.Truck);
 
-                null  // replace this reference
+                    if (isCoach) {
+                        totalFines += coachOffence;
+                    } else if (isTruck) {
+                        totalFines += truckOffence;
+                    }
+
+                    return totalFines;
+                }
         );
     }
 
     /**
      * Prepares a list of topNumber of violations that show the highest offencesCount
      * when this.violations are aggregated by car across all cities.
-     * @param topNumber     the requested top number of violations in the result list
-     * @return              a list of topNum items that provides the top aggregated violations
+     *
+     * @param topNumber the requested top number of violations in the result list
+     * @return a list of topNum items that provides the top aggregated violations
      */
     public List<Violation> topViolationsByCar(int topNumber) {
 
@@ -151,8 +168,9 @@ public class TrafficTracker {
     /**
      * Prepares a list of topNumber of violations that show the highest offencesCount
      * when this.violations are aggregated by city across all cars.
-     * @param topNumber     the requested top number of violations in the result list
-     * @return              a list of topNum items that provides the top aggregated violations
+     *
+     * @param topNumber the requested top number of violations in the result list
+     * @return a list of topNum items that provides the top aggregated violations
      */
     public List<Violation> topViolationsByCity(int topNumber) {
 
@@ -168,12 +186,13 @@ public class TrafficTracker {
 
     /**
      * imports a collection of items from a text file which provides one line for each item
-     * @param items         the list to which imported items shall be added
-     * @param file          the source text file
-     * @param converter     a function that can convert a text line into a new item instance
-     * @param <E>           the (generic) type of each item
+     *
+     * @param items     the list to which imported items shall be added
+     * @param file      the source text file
+     * @param converter a function that can convert a text line into a new item instance
+     * @param <E>       the (generic) type of each item
      */
-    public static <E> int importItemsFromFile(List<E> items, File file, Function<String,E> converter) {
+    public static <E> int importItemsFromFile(List<E> items, File file, Function<String, E> converter) {
         int numberOfLines = 0;
 
         Scanner scanner = createFileScanner(file);
@@ -189,7 +208,6 @@ public class TrafficTracker {
             // TODO convert the line to an instance of E
 
 
-
             // TODO add a successfully converted item to the list of items
 
 
@@ -201,6 +219,7 @@ public class TrafficTracker {
 
     /**
      * helper method to create a scanner on a file and handle the exception
+     *
      * @param file
      * @return
      */
@@ -211,6 +230,7 @@ public class TrafficTracker {
             throw new RuntimeException("FileNotFound exception on path: " + file.getPath());
         }
     }
+
     private static File createFileFromURL(URL url) {
         try {
             return new File(url.toURI().getPath());

@@ -13,9 +13,13 @@ public class Violation {
 
     public static int compareByLicensePlateAndCity(Violation v1, Violation v2) {
         // TODO compute the ordening of v1 vs v2 as per conventions of Comparator<Violation>
+        int compareCity = v1.getCity().compareTo(v2.getCity());
 
-
-        return 0;   // replace by a proper outcome
+        // if cities are the same check, do license plate check
+        if(compareCity == 0){
+            return v1.getCar().getLicensePlate().compareTo(v2.getCar().getLicensePlate());
+        }
+        return compareCity;
     }
 
 
@@ -57,10 +61,14 @@ public class Violation {
         this.offencesCount = offencesCount;
     }
 
-    // TODO represent the violation in the format: licensePlate/city/offencesCount
     @Override
     public String toString() {
-
-        return "TODO:Violation.toString";   // replace by a proper outcome
+        StringBuilder builder = new StringBuilder();
+        builder.append(car.getLicensePlate())
+                .append("/")
+                .append(city)
+                .append("/")
+                .append(offencesCount);
+        return builder.toString();
     }
 }

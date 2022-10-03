@@ -89,6 +89,25 @@ public class OrderedArrayList<E>
      * @return              the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByIterativeBinarySearch(E searchItem) {
+        int firstIndex = 0;
+        int lastIndex = this.size() - 1;
+
+        //sort the order
+        sort(this.ordening);
+
+        // When false... the binary search is finished
+        while(firstIndex <= lastIndex){
+            int midIndex = (firstIndex + lastIndex) / 2;
+            if(indexOf(this.get(midIndex)) > indexOf(searchItem)){
+                lastIndex = midIndex - 1;
+            } else if (indexOf(this.get(midIndex)) < indexOf(searchItem)){
+                firstIndex = midIndex + 1;
+            } else if(indexOf(this.get(midIndex)) == indexOf(searchItem) ){
+                return indexOf(this.get(midIndex));
+            } else {
+                return -1;
+            }
+        }
 
         // TODO implement an iterative binary search on the sorted section of the arrayList, 0 <= index < nSorted
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
@@ -163,6 +182,9 @@ public class OrderedArrayList<E>
     public double aggregate(Function<E,Double> mapper) {
         double sum = 0.0;
 
+        for(E item: this){
+            sum += mapper.apply(item);
+        }
         // TODO loop over all items and use the mapper
         //  to calculate and accumulate the contribution of each item
 

@@ -36,12 +36,24 @@ public class Detection {
      * or null if the textLine is corrupt or incomplete
      */
     public static Detection fromLine(String textLine, List<Car> cars) {
-        Detection newDetection = null;
+        Detection newDetection;
+
 
         // TODO convert the information in the textLine into a new Detection instance
         //  use the cars.indexOf to find the car that is associated with the licensePlate of the detection
         //  if no car can be found a new Car shall be instantiated and added to the list and associated with the detection
 
+        // splitter to 'split' every detail
+        String[] splitter = textLine.split(",");
+        try {
+            int index = cars.indexOf(splitter[0].trim());
+            newDetection = new Detection(
+                    cars.get(index),
+                    splitter[1],
+                    LocalDateTime.parse(splitter[2].trim()));
+        } catch (Exception e) {
+            return null;
+        }
 
         return newDetection;
     }
@@ -55,8 +67,15 @@ public class Detection {
      */
     public Violation validatePurple() {
         // TODO validate that diesel trucks and diesel coaches have an emission category of 6 or above
+        int minimumEmission = 6;
 
-
+        // check if the car is a coach or truck
+        // then if it's a diesel and below the specific emission category
+        if(car.getCarType() == CarType.Coach || car.getCarType() == CarType.Truck){
+            if(car.getFuelType() == FuelType.Diesel && car.getEmissionCategory() < minimumEmission){
+                return new Violation(this.car,this.city);
+            }
+        }
         return null;
     }
 
@@ -75,9 +94,12 @@ public class Detection {
 
     @Override
     public String toString() {
-        // TODO represent the detection in the format: licensePlate/city/dateTime
-
-        return "TODO:Detection.toString";       // replace by a proper outcome
+        StringBuilder builder = new StringBuilder();
+        builder.append(car.getLicensePlate())
+                .append("/")
+                .append(city)
+                .append("/")
+                .append(dateTime);
+        return  builder.toString();
     }
-
 }
