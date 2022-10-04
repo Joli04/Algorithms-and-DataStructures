@@ -37,19 +37,13 @@ public class Detection {
      */
     public static Detection fromLine(String textLine, List<Car> cars) {
         Detection newDetection;
-
-
-        // TODO convert the information in the textLine into a new Detection instance
-        //  use the cars.indexOf to find the car that is associated with the licensePlate of the detection
-        //  if no car can be found a new Car shall be instantiated and added to the list and associated with the detection
-
         // splitter to 'split' every detail
         String[] splitter = textLine.split(",");
         try {
-            int index = cars.indexOf(splitter[0].trim());
+            int index = cars.indexOf(new Car(splitter[0].trim()));
             newDetection = new Detection(
                     cars.get(index),
-                    splitter[1],
+                    splitter[1].trim(),
                     LocalDateTime.parse(splitter[2].trim()));
         } catch (Exception e) {
             return null;
