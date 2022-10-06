@@ -15,6 +15,19 @@ public class TrafficTracker {
     private OrderedList<Violation> violations;      // the accumulation of all offences by car and by city
 
     public TrafficTracker() {
+
+        // sort on licence plate
+//        cars = new OrderedArrayList<>(Comparator.comparing(Car::getLicensePlate));
+//
+//        // sort on cars, if they're the same sort on city as well
+//        violations = new OrderedArrayList<>((o1, o2) -> {
+//            int test = o1.getCar().compareTo(o2.getCar());
+//            if(test == 0){
+//               return o1.getCity().compareTo(o2.getCity());
+//            }
+//            return test;
+//        });
+
         cars = new OrderedArrayList<>();
         violations = new OrderedArrayList<>();
         // TODO initialize cars with an empty ordered list which sorts items by licensePlate.

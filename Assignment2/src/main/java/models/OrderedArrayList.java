@@ -114,7 +114,7 @@ public class OrderedArrayList<E>
             }
         }
 
-        // If binary search doesn't work... Linear search
+//      If binary search doesn't work... Linear search
         for (E item : this) {
             if (item.equals(searchItem)) {
                 return indexOf(searchItem);
