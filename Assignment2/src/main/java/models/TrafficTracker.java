@@ -1,9 +1,9 @@
 package models;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Function;
 
@@ -88,6 +88,11 @@ public class TrafficTracker {
 
             // TODO recursively process all files and sub folders from the filesInDirectory list.
             //  also track the total number of offences found
+            for (File file1 : filesInDirectory) {
+                mergeDetectionsFromVaultRecursively(file1);
+                totalNumberOfOffences += 1;
+            }
+
 
 
         } else if (file.getName().matches(TRAFFIC_FILE_PATTERN)) {
@@ -106,6 +111,7 @@ public class TrafficTracker {
      * @param file
      */
     private int mergeDetectionsFromFile(File file) {
+        //TODO HOE DE LINE CONVERTEN ZODAT DETECTION INTANCE HET ACCEPTEERT
 
         // re-sort the accumulated violations for efficient searching and merging
         this.violations.sort();
@@ -115,6 +121,19 @@ public class TrafficTracker {
 
         // TODO import all detections from the specified file into the newDetections list
         //  using the importItemsFromFile helper method and the Detection.fromLine parser.
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line = reader.readLine();
+            String[] splitter = line.split(",");
+            System.out.println(splitter[0]);
+            while(line != null){
+                newDetections.add(Detection.fromLine(splitter[0].trim(), cars));
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 
         System.out.printf("Imported %d detections from %s.\n", newDetections.size(), file.getPath());
@@ -125,6 +144,11 @@ public class TrafficTracker {
         //  merge any resulting offences into this.violations, accumulating offences per car and per city
         //  also keep track of the totalNumberOfOffences for reporting
 
+//        for (Detection newDetection : newDetections) {
+//            if(newDetection.validatePurple() != null){
+//                totalNumberOfOffences += 1;
+//            }
+//        }
 
         return totalNumberOfOffences;
     }
@@ -136,7 +160,6 @@ public class TrafficTracker {
      * @return the total amount of money recovered from all violations
      */
     public double calculateTotalFines() {
-
 
         return this.violations.aggregate(
 
@@ -217,7 +240,7 @@ public class TrafficTracker {
             // input another line with author information
             String line = scanner.nextLine();
             numberOfLines++;
-
+            items.add(converter.apply(line));
             // TODO convert the line to an instance of E
 
 

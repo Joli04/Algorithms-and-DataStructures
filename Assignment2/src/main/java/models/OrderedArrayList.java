@@ -129,6 +129,21 @@ public class OrderedArrayList<E>
         return -1;  // nothing was found ???
     }
 
+    public int helper(int from, int to, E searchItem) {
+        if (from > to) {
+            return -1;
+        }
+        int midIndex = (from + to) / 2;
+        if (indexOf(this.get(midIndex)) > indexOf(searchItem)) {
+            return helper(from, midIndex - 1, searchItem);
+        } else if (indexOf(this.get(midIndex)) < indexOf(searchItem)) {
+            midIndex += 1;
+            return helper(midIndex + 1, to, searchItem);
+        } else {
+            return midIndex;
+        }
+    }
+
     /**
      * finds the position of the searchItem by a recursive binary search algorithm in the
      * sorted section of the arrayList, using the this.ordening comparator for comparison and equality test.
@@ -140,14 +155,24 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByRecursiveBinarySearch(E searchItem) {
-        int startIndex = 0;
-        int lastIndex = this.size() - 1;
-        int midIndex = (startIndex + lastIndex) / 2;
-        // Need a helper function
+        if(this.indexOf(this.get(0)) > this.size()-1){
+            return helper(this.indexOf(this.get(0)), this.size() - 1, searchItem);
+        } else {
+            return -1;
+        }
 
+//        return -1;
+//        int startIndex = 0;
+//        int lastIndex = this.size() - 1;
+//
+//        // Need a helper function
+//        int testIndex = indexOf(searchItem);
+//
+//
 //        if(startIndex > lastIndex){
 //            return -1;
 //        }
+//        int midIndex = (startIndex + lastIndex) / 2;
 //        if(indexOf(this.get(midIndex)) > indexOf(searchItem)){
 //            midIndex -= 1;
 //            return indexOfByRecursiveBinarySearch(searchItem);
@@ -157,6 +182,8 @@ public class OrderedArrayList<E>
 //        } else {
 //            return midIndex;
 //        }
+
+//        helper(this)
         // TODO implement a recursive binary search on the sorted section of the arrayList, 0 <= index < nSorted
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
 
@@ -164,9 +191,8 @@ public class OrderedArrayList<E>
         // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
 
 
-        return -1;  // nothing was found ???
+//        return -1;  // nothing was found ???
     }
-
 
     /**
      * finds a match of newItem in the list and applies the merger operator with the newItem to that match
