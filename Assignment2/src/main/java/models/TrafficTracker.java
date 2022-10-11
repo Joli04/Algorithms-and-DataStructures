@@ -16,20 +16,20 @@ public class TrafficTracker {
 
     public TrafficTracker() {
 
-        // sort on licence plate
-//        cars = new OrderedArrayList<>(Comparator.comparing(Car::getLicensePlate));
-//
-//        // sort on cars, if they're the same sort on city as well
-//        violations = new OrderedArrayList<>((o1, o2) -> {
-//            int test = o1.getCar().compareTo(o2.getCar());
-//            if(test == 0){
-//               return o1.getCity().compareTo(o2.getCity());
-//            }
-//            return test;
-//        });
+//         sort on licence plate
+        cars = new OrderedArrayList<>(Comparator.comparing(Car::getLicensePlate));
 
-        cars = new OrderedArrayList<>();
-        violations = new OrderedArrayList<>();
+        // sort on cars, if they're the same sort on city as well
+        violations = new OrderedArrayList<>((o1, o2) -> {
+            int test = o1.getCar().compareTo(o2.getCar());
+            if(test == 0){
+               return o1.getCity().compareTo(o2.getCity());
+            }
+            return test;
+        });
+
+//        cars = new OrderedArrayList<>();
+//        violations = new OrderedArrayList<>();
         // TODO initialize cars with an empty ordered list which sorts items by licensePlate.
         //  initalize violations with an empty ordered list which sorts items by car and city.
         //  Use your generic implementation class OrderedArrayList
@@ -144,11 +144,11 @@ public class TrafficTracker {
         //  merge any resulting offences into this.violations, accumulating offences per car and per city
         //  also keep track of the totalNumberOfOffences for reporting
 
-//        for (Detection newDetection : newDetections) {
-//            if(newDetection.validatePurple() != null){
-//                totalNumberOfOffences += 1;
-//            }
-//        }
+        for (Detection newDetection : newDetections) {
+            if(newDetection.validatePurple() != null){
+                totalNumberOfOffences += 1;
+            }
+        }
 
         return totalNumberOfOffences;
     }
