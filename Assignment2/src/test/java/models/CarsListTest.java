@@ -95,7 +95,7 @@ public class CarsListTest {
         assertSame(volvo2, cars.get(cars.size()-1),
                 "a new car shall be added into the unsorted section at the end");
         // check whether iterative binary search can find all
-//        testSearchForAll(cars, cars::indexOfByIterativeBinarySearch);
+        testSearchForAll(cars, cars::indexOfByIterativeBinarySearch);
 //
 //        assertEquals(-1, cars.indexOfByIterativeBinarySearch(daf2),
 //                "should not be able to find a missing item");

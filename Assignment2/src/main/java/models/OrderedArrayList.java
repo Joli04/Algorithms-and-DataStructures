@@ -101,7 +101,7 @@ public class OrderedArrayList<E>
         int firstIndex = 0, i = 0;
         int lastIndex = this.size() - 1;
 
-        if(i<nSorted ) {
+        if (i < nSorted) {
             while (firstIndex <= lastIndex) {
                 int midIndex = (firstIndex + lastIndex) / 2;
                 if (this.ordening.compare(this.get(midIndex), searchItem) > 0) {
@@ -179,43 +179,35 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByRecursiveBinarySearch(E searchItem) {
-        if (this.indexOf(this.get(0)) > this.size() - 1) {
-            return helper(this.indexOf(this.get(0)), this.size() - 1, searchItem);
-        } else {
+        int firstIndex = 0;
+        int lastIndex = this.size() - 1;
+        int i = 0;
+
+        if (firstIndex > lastIndex) {
             return -1;
         }
-
-//        return -1;
-//        int startIndex = 0;
-//        int lastIndex = this.size() - 1;
-//
-//        // Need a helper function
-//        int testIndex = indexOf(searchItem);
-//
-//
-//        if(startIndex > lastIndex){
-//            return -1;
-//        }
-//        int midIndex = (startIndex + lastIndex) / 2;
-//        if(indexOf(this.get(midIndex)) > indexOf(searchItem)){
-//            midIndex -= 1;
-//            return indexOfByRecursiveBinarySearch(searchItem);
-//        } else if (indexOf(this.get(midIndex)) < indexOf(searchItem)){
-//            midIndex += 1;
-//            return indexOfByRecursiveBinarySearch(searchItem);
-//        } else {
-//            return midIndex;
-//        }
-
-//        helper(this)
+        if (i < nSorted) {
+            int midIndex = (firstIndex + lastIndex) / 2;
+            if (this.ordening.compare(this.get(midIndex), searchItem) > 0) {
+                helper(firstIndex, midIndex - 1, searchItem);
+            } else if (this.ordening.compare(this.get(midIndex), searchItem) < 0) {
+                helper(midIndex + 1, lastIndex, searchItem);
+            } else if (this.ordening.compare(this.get(midIndex), searchItem) == 0) {
+                return midIndex;
+            }
+        } else {
+            // linear search
+            for (E item : this) {
+                if (item.equals(searchItem)) {
+                    return indexOf(searchItem);
+                }
+            }
+        }
         // TODO implement a recursive binary search on the sorted section of the arrayList, 0 <= index < nSorted
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
 
-
         // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
-
-
-//        return -1;  // nothing was found ???
+        return -1;  // nothing was found ???
     }
 
     /**
