@@ -44,21 +44,33 @@ public class OrderedArrayList<E>
     }
 
     @Override
-    public void add(int index, E element) {
-        super.add(index, element);
+    public void add(int index, E item) {
+        super.add(index, item);
+
+        if (index <= nSorted) {
+            this.nSorted += 1;
+        }
     }
 
     @Override
     public E remove(int index) {
-        return super.remove(index);
+        E removed = super.remove(index);
+
+        if (index <= nSorted) {
+            this.nSorted -= 1;
+        }
+        return removed;
     }
 
-    // TODO override the ArrayList.add(index, item), ArrayList.remove(index) and Collection.remove(object) methods
-    //  such that they both meet the ArrayList contract of these methods (see ArrayList JavaDoc)
-    //  and sustain the representation invariant of OrderedArrayList
-    //  (hint: only change nSorted as required to guarantee the representation invariant,
-    //   do not invoke a sort or reorder items otherwise differently than is specified by the ArrayList contract)
+    @Override
+    public boolean remove(Object object) {
+        boolean removed = super.remove(object);
 
+        if (removed) {
+            this.nSorted -= 1;
+        }
+        return removed;
+    }
 
     @Override
     public void sort() {
@@ -98,74 +110,26 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByIterativeBinarySearch(E searchItem) {
-        int firstIndex = 0, i = 0;
-        int lastIndex = this.size() - 1;
+        int first = 0;
+        int last = nSorted - 1;
 
-        if (i < nSorted) {
-            while (firstIndex <= lastIndex) {
-                int midIndex = (firstIndex + lastIndex) / 2;
-                if (this.ordening.compare(this.get(midIndex), searchItem) > 0) {
-                    lastIndex = midIndex - 1;
-                } else if (this.ordening.compare(this.get(midIndex), searchItem) < 0) {
-                    firstIndex = midIndex + 1;
-                } else if (this.ordening.compare(this.get(midIndex), searchItem) == 0) {
-                    return midIndex;
-                }
-                i++;
-            }
-        } else {
-            for (E item : this) {
-                if (item.equals(searchItem)) {
-                    return indexOf(searchItem);
-                }
+        while (first <= last) {
+            int middle = first + (last - first) / 2;
+
+            if (ordening.compare(this.get(middle), searchItem) == 0) {
+                return middle;
+            } else if (ordening.compare(this.get(middle), searchItem) < 0) {
+                first = middle + 1;
+            } else {
+                last = middle - 1;
             }
         }
-
-//        System.out.println(nSorted);
-//        if (i < nSorted) {
-//            // When false... the binary search is finished
-//            while (firstIndex <= lastIndex) {
-//                int midIndex = (firstIndex + lastIndex) / 2;
-//                if (indexOf(this.get(midIndex)) > indexOf(searchItem)) {
-//                    lastIndex = midIndex - 1;
-//                } else if (indexOf(this.get(midIndex)) < indexOf(searchItem)) {
-//                    firstIndex = midIndex + 1;
-//                } else if (indexOf(this.get(midIndex)) == indexOf(searchItem)) {
-//                    return indexOf(this.get(midIndex));
-//                }
-//                i++;
-//            }
-//        } else {
-////      If binary search doesn't work... Linear search
-//            for (E item : this) {
-//                if (item.equals(searchItem)) {
-//                    return indexOf(searchItem);
-//                }
-//            }
-//        }
-
-        // TODO implement an iterative binary search on the sorted section of the arrayList, 0 <= index < nSorted
-        //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
-
-        // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
-
-
-        return -1;  // nothing was found ???
-    }
-
-    public int helper(int from, int to, E searchItem) {
-        if (from > to) {
-            return -1;
+        for (int i = nSorted; i < this.size(); i++) {
+            if (ordening.compare(this.get(i), searchItem) == 0) {
+                return i;
+            }
         }
-        int midIndex = (from + to) / 2;
-        if (indexOf(this.get(midIndex)) > indexOf(searchItem)) {
-            return helper(from, midIndex - 1, searchItem);
-        } else if (indexOf(this.get(midIndex)) < indexOf(searchItem)) {
-            midIndex += 1;
-            return helper(midIndex + 1, to, searchItem);
-        } else {
-            return midIndex;
-        }
+        return -1;
     }
 
     /**
@@ -179,36 +143,35 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByRecursiveBinarySearch(E searchItem) {
-        int firstIndex = 0;
-        int lastIndex = this.size() - 1;
-        int i = 0;
-
-        if (firstIndex > lastIndex) {
-            return -1;
-        }
-        if (i < nSorted) {
-            int midIndex = (firstIndex + lastIndex) / 2;
-            if (this.ordening.compare(this.get(midIndex), searchItem) > 0) {
-                helper(firstIndex, midIndex - 1, searchItem);
-            } else if (this.ordening.compare(this.get(midIndex), searchItem) < 0) {
-                helper(midIndex + 1, lastIndex, searchItem);
-            } else if (this.ordening.compare(this.get(midIndex), searchItem) == 0) {
-                return midIndex;
-            }
-        } else {
-            // linear search
-            for (E item : this) {
-                if (item.equals(searchItem)) {
-                    return indexOf(searchItem);
-                }
-            }
-        }
-        // TODO implement a recursive binary search on the sorted section of the arrayList, 0 <= index < nSorted
-        //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
-
-        // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
-        return -1;  // nothing was found ???
+        int first = 0;
+        int last = nSorted - 1;
+        return recursiveBinarySearch(searchItem, first, last);
     }
+
+    public int recursiveHelperMethod(int first, int last, E searchItem) {
+        return recursiveBinarySearch(searchItem, first, last);
+    }
+
+    private int recursiveBinarySearch(E searchItem, int first, int last) {
+        if (last >= first) {
+            int middle = first + (last - first) / 2;
+
+            if (ordening.compare(this.get(middle), searchItem) == 0) {
+                return middle;
+            } else if (ordening.compare(this.get(middle), searchItem) > 0) {
+                return recursiveHelperMethod(first, middle - 1, searchItem);
+            } else {
+                return recursiveHelperMethod(middle + 1, last, searchItem);
+            }
+        }
+        for (int i = nSorted; i < this.size(); i++) {
+            if (ordening.compare(this.get(i), searchItem) == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
 
     /**
      * finds a match of newItem in the list and applies the merger operator with the newItem to that match
@@ -231,10 +194,9 @@ public class OrderedArrayList<E>
             this.add(newItem);
             return true;
         } else {
-            // TODO retrieve the matched item and
-            //  replace the matched item in the list with the merger of the matched item and the newItem
+            E merged = merger.apply(this.get(matchedItemIndex), newItem);
 
-
+            this.set(matchedItemIndex, merged);
             return false;
         }
     }
@@ -249,12 +211,11 @@ public class OrderedArrayList<E>
     public double aggregate(Function<E, Double> mapper) {
         double sum = 0.0;
 
-        for (E item : this) {
-            sum += mapper.apply(item);
+        if (mapper != null) {
+            for (E item : this) {
+                sum += mapper.apply(item);
+            }
         }
-        // TODO loop over all items and use the mapper
-        //  to calculate and accumulate the contribution of each item
-
 
         return sum;
     }
