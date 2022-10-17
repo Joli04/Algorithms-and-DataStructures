@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 public class TrafficTracker {
@@ -77,6 +78,11 @@ public class TrafficTracker {
             }
 
         }
+        else if (file.getName().matches(TRAFFIC_FILE_PATTERN)) {
+            // the file is a regular file that matches the target pattern for raw detection files
+            // process the content of this file and merge the offences found into this.violations
+            totalNumberOfOffences += this.mergeDetectionsFromFile(file);
+        }
 
         return totalNumberOfOffences;
     }
@@ -148,18 +154,15 @@ public class TrafficTracker {
      */
     public List<Violation> topViolationsByCar(int topNumber) {
 
-        OrderedList<Violation> newViolations = new OrderedArrayList<>(Violation::compareByLicensePlateAndCity);
-        newViolations.aggregate(s -> (double) Violation.compareByLicensePlateAndCity(s, (Violation) this.violations));
-        newViolations.addAll(this.violations);
-        System.out.println(newViolations.size());
-        System.out.println(newViolations);
-        // TODO merge all violations from this.violations into a new OrderedArrayList
-        //   which orders and aggregates violations by city
-        // TODO sort the new list by decreasing offencesCount.
-        // TODO use .subList to return only the topNumber of violations from the sorted list
-        //  (You may want to prepare/reuse a local private method for all this)
-
-        return newViolations;  // replace this reference
+        OrderedArrayList<Violation> violationsByCarList = new OrderedArrayList<>((o1, o2) -> {
+            int resultComparing = o1.getCar().compareTo(o2.getCar());
+            if (resultComparing == 0) {
+                o1.combineOffencesCounts(o2);
+            }
+            return resultComparing;
+        });
+        comparingTopOffences(violationsByCarList);
+        return violationsByCarList.subList(0, topNumber);
     }
 
     /**
@@ -170,15 +173,25 @@ public class TrafficTracker {
      */
     public List<Violation> topViolationsByCity(int topNumber) {
 
-        // TODO merge all violations from this.violations into a new OrderedArrayList
-        //   which orders and aggregates violations by Car
-        // TODO sort the new list by decreasing offencesCount.
-        // TODO use .subList to return only the topNumber of violations from the sorted list
-        //  (You may want to prepare/reuse a local private method for all this)
-
-        return null;  // replace this reference
+        OrderedArrayList<Violation> violationsByCityList = new OrderedArrayList<>((o1, o2) -> {
+            int resultComparing = o1.getCity().compareTo(o2.getCity());
+            if (resultComparing == 0)
+                o1.combineOffencesCounts(o2);
+            return resultComparing;
+        });
+        comparingTopOffences(violationsByCityList);
+        return violationsByCityList.subList(0, topNumber);
     }
 
+    public void comparingTopOffences(OrderedArrayList<Violation> list){
+        for (Violation violation:this.violations) {
+            list.merge(violation, Violation::combineOffencesCounts);
+        }
+
+        Comparator<Violation> violationOffencesComparator = Comparator.comparing(Violation::getOffencesCount);
+        Comparator<Violation> violationReversedComparator = violationOffencesComparator.reversed();
+        list.sort(violationReversedComparator);
+    }
 
     /**
      * imports a collection of items from a text file which provides one line for each item

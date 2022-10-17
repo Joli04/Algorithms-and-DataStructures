@@ -17,7 +17,7 @@ public class Violation {
 
         // if cities are the same check, do license plate check
         if(compareCity == 0){
-            return v1.getCar().getLicensePlate().compareTo(v2.getCar().getLicensePlate());
+            return -v1.getCar().getLicensePlate().compareTo(v2.getCar().getLicensePlate());
         }
         return compareCity;
     }
@@ -63,12 +63,10 @@ public class Violation {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(car.getLicensePlate())
-                .append("/")
-                .append(city)
-                .append("/")
-                .append(offencesCount);
-        return builder.toString();
+        if (car == null){
+            return String.format("%s/%s/%d", null, city, offencesCount);
+        } else {
+            return String.format("%s/%s/%d", car.getLicensePlate(), city, offencesCount);
+        }
     }
 }

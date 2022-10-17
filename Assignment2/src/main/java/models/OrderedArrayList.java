@@ -46,10 +46,6 @@ public class OrderedArrayList<E>
     @Override
     public void add(int index, E item) {
         super.add(index, item);
-
-        if (index <= nSorted) {
-            this.nSorted += 1;
-        }
     }
 
     @Override
@@ -211,10 +207,8 @@ public class OrderedArrayList<E>
     public double aggregate(Function<E, Double> mapper) {
         double sum = 0.0;
 
-        if (mapper != null) {
-            for (E item : this) {
-                sum += mapper.apply(item);
-            }
+        for (E item : this) {
+            sum += mapper.apply(item);
         }
 
         return sum;
