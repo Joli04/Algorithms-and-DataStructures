@@ -67,16 +67,13 @@ public class Detection {
      */
     public Violation validatePurple() {
         // TODO validate that diesel trucks and diesel coaches have an emission category of 6 or above
-        int minimumEmission = 6;
-
+        final int minimumEmission = 6;
         // check if the car is a coach or truck
         // then if it's a diesel and below the specific emission category
         if (car.getCarType() == CarType.Coach || car.getCarType() == CarType.Truck) {
             if (car.getFuelType() == FuelType.Diesel && car.getEmissionCategory() < minimumEmission) {
                 return new Violation(this.car, this.city);
             }
-        } else {
-            return null;
         }
         return null;
     }

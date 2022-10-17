@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 public class TrafficTracker {
@@ -154,13 +153,16 @@ public class TrafficTracker {
      */
     public List<Violation> topViolationsByCar(int topNumber) {
 
+        //Make an List that holds violations
         OrderedArrayList<Violation> violationsByCarList = new OrderedArrayList<>((o1, o2) -> {
+            //We compare the two Cars and if they are the same, we add the counts of both violations with each other.
             int resultComparing = o1.getCar().compareTo(o2.getCar());
             if (resultComparing == 0) {
                 o1.combineOffencesCounts(o2);
             }
             return resultComparing;
         });
+        //We call our function that merges and sorts the list.
         comparingTopOffences(violationsByCarList);
         return violationsByCarList.subList(0, topNumber);
     }
@@ -179,17 +181,22 @@ public class TrafficTracker {
                 o1.combineOffencesCounts(o2);
             return resultComparing;
         });
+        //We call our selfmade method and pass the ordered arrayList
         comparingTopOffences(violationsByCityList);
         return violationsByCityList.subList(0, topNumber);
     }
 
     public void comparingTopOffences(OrderedArrayList<Violation> list){
+        //We loop through all the violations in an violations list and merge them with the given List.
         for (Violation violation:this.violations) {
             list.merge(violation, Violation::combineOffencesCounts);
         }
 
+        //We make a Comparator where we compare all the offences count.
         Comparator<Violation> violationOffencesComparator = Comparator.comparing(Violation::getOffencesCount);
+        //We then make a reversed Comparator that reverses the previous comparator.
         Comparator<Violation> violationReversedComparator = violationOffencesComparator.reversed();
+        // We sort our given list with the reverse Comparator that we made
         list.sort(violationReversedComparator);
     }
 

@@ -46,6 +46,9 @@ public class OrderedArrayList<E>
     @Override
     public void add(int index, E item) {
         super.add(index, item);
+        if(index <= nSorted){
+            nSorted = index;
+        }
     }
 
     @Override
