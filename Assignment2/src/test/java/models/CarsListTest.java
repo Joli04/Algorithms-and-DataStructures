@@ -96,22 +96,22 @@ public class CarsListTest {
                 "a new car shall be added into the unsorted section at the end");
         // check whether iterative binary search can find all
         testSearchForAll(cars, cars::indexOfByIterativeBinarySearch);
-//
-//        assertEquals(-1, cars.indexOfByIterativeBinarySearch(daf2),
-//                "should not be able to find a missing item");
-//
-//        cars.add(daf2);
-//        assertEquals(initialCars.size(), cars.nSorted);
-//        // check whether iterative binary search can find all
-//        testSearchForAll(cars, cars::indexOfByIterativeBinarySearch);
-//
-//        cars.clear();
-//        cars.sort();
-//        assertEquals(-1, cars.indexOfByIterativeBinarySearch(scoda),
-//                "should not be able to find an item in an empty list");
-//        cars.addAll(initialCars);
-//        // check whether iterative binary search can find all
-//        testSearchForAll(cars, cars::indexOfByIterativeBinarySearch);
+
+        assertEquals(-1, cars.indexOfByIterativeBinarySearch(daf2),
+                "should not be able to find a missing item");
+
+        cars.add(daf2);
+        assertEquals(initialCars.size(), cars.nSorted);
+        // check whether iterative binary search can find all
+        testSearchForAll(cars, cars::indexOfByIterativeBinarySearch);
+
+        cars.clear();
+        cars.sort();
+        assertEquals(-1, cars.indexOfByIterativeBinarySearch(scoda),
+                "should not be able to find an item in an empty list");
+        cars.addAll(initialCars);
+        // check whether iterative binary search can find all
+        testSearchForAll(cars, cars::indexOfByIterativeBinarySearch);
     }
 
     @Test

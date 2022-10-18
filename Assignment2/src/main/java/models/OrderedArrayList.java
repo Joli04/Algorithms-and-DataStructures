@@ -144,14 +144,6 @@ public class OrderedArrayList<E>
     public int indexOfByRecursiveBinarySearch(E searchItem) {
         int first = 0;
         int last = nSorted - 1;
-        return recursiveBinarySearch(searchItem, first, last);
-    }
-
-    public int recursiveHelperMethod(int first, int last, E searchItem) {
-        return recursiveBinarySearch(searchItem, first, last);
-    }
-
-    private int recursiveBinarySearch(E searchItem, int first, int last) {
         if (last >= first) {
             int middle = first + (last - first) / 2;
 
@@ -171,6 +163,33 @@ public class OrderedArrayList<E>
         return -1;
     }
 
+
+    /**
+     * helper method
+     * @param first first index of the sequence
+     * @param last last index of the sequence
+     * @param searchItem search for the item
+     * @return index of the searchItem
+     */
+    public int recursiveHelperMethod(int first, int last, E searchItem) {
+        if (last >= first) {
+            int middle = first + (last - first) / 2;
+            // comparing the items to determine the index
+            if (ordening.compare(this.get(middle), searchItem) == 0) {
+                return middle;
+            } else if (ordening.compare(this.get(middle), searchItem) > 0) {
+                return recursiveHelperMethod(first, middle - 1, searchItem);
+            } else {
+                return recursiveHelperMethod(middle + 1, last, searchItem);
+            }
+        }
+        for (int i = nSorted; i < this.size(); i++) {
+            if (ordening.compare(this.get(i), searchItem) == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     /**
      * finds a match of newItem in the list and applies the merger operator with the newItem to that match

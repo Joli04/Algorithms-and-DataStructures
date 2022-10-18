@@ -21,6 +21,7 @@ public class TrafficTracker {
 
     /**
      * imports all registered cars from a resource file that has been provided by the RDW
+     *
      * @param resourceName
      */
     public void importCarsFromVault(String resourceName) {
@@ -34,12 +35,13 @@ public class TrafficTracker {
         // sort the cars for efficient later retrieval
         this.cars.sort();
 
-        System.out.printf("Imported %d cars from %d lines in %s.\n", this.cars.size(), numberOfLines, resourceName);
+//        System.out.printf("Imported %d cars from %d lines in %s.\n", this.cars.size(), numberOfLines, resourceName);
     }
 
     /**
      * imports and merges all raw detection data of all entry gates of all cities from the hierarchical file structure of the vault
      * accumulates any offences against purple rules into this.violations
+     *
      * @param resourceName
      */
     public void importDetectionsFromVault(String resourceName) {
@@ -49,12 +51,13 @@ public class TrafficTracker {
                 this.mergeDetectionsFromVaultRecursively(
                         createFileFromURL(TrafficTracker.class.getResource(resourceName)));
 
-        System.out.printf("Found %d offences among detections imported from files in %s.\n",
-                totalNumberOfOffences, resourceName);
+//        System.out.printf("Found %d offences among detections imported from files in %s.\n",
+//                totalNumberOfOffences, resourceName);
     }
 
     /**
      * traverses the detections vault recursively and processes every data file that it finds
+     *
      * @param file
      */
     private int mergeDetectionsFromVaultRecursively(File file) {
@@ -71,13 +74,12 @@ public class TrafficTracker {
             for (File value : filesInDirectory) {
                 File[] files = value.listFiles();
                 assert files != null;
-                for (File f: files) {
+                for (File f : files) {
                     totalNumberOfOffences += mergeDetectionsFromFile(f);
                 }
             }
 
-        }
-        else if (file.getName().matches(TRAFFIC_FILE_PATTERN)) {
+        } else if (file.getName().matches(TRAFFIC_FILE_PATTERN)) {
             // the file is a regular file that matches the target pattern for raw detection files
             // process the content of this file and merge the offences found into this.violations
             totalNumberOfOffences += this.mergeDetectionsFromFile(file);
@@ -89,6 +91,7 @@ public class TrafficTracker {
     /**
      * imports another batch detection data from the filePath text file
      * and merges the offences into the earlier imported and accumulated violations
+     *
      * @param file
      */
     private int mergeDetectionsFromFile(File file) {
@@ -101,13 +104,13 @@ public class TrafficTracker {
 
         importItemsFromFile(newDetections, file, s -> Detection.fromLine(s, this.cars));
 
-        System.out.printf("Imported %d detections from %s.\n", newDetections.size(), file.getPath());
+//        System.out.printf("Imported %d detections from %s.\n", newDetections.size(), file.getPath());
 
         int totalNumberOfOffences = 0; // tracks the number of offences that emerges from the data in this file
 
-        for (Detection detection: newDetections) {
+        for (Detection detection : newDetections) {
             Violation violation = detection.validatePurple();
-            if (violation != null){
+            if (violation != null) {
                 this.violations.merge(violation, Violation::combineOffencesCounts);
                 totalNumberOfOffences++;
             }
@@ -119,7 +122,8 @@ public class TrafficTracker {
     /**
      * calculates the total revenue of fines from all violations,
      * Trucks pay €25 per offence, Coaches €35 per offence
-     * @return      the total amount of money recovered from all violations
+     *
+     * @return the total amount of money recovered from all violations
      */
     public double calculateTotalFines() {
 
@@ -146,10 +150,30 @@ public class TrafficTracker {
     }
 
     /**
+     * exception handler for topViolationsByCar() and topViolationsByCity()
+     *
+     * @param topNumber           int
+     * @param list List
+     * @return (sub)List
+     */
+    private List<Violation> exceptionHandler(int topNumber, OrderedArrayList<Violation> list) {
+        //We call our selfmade method and pass the ordered arrayList
+        comparingTopOffences(list);
+        String exceptionMessage = String.format("%d is not valid (0-%d)", topNumber, list.size());
+        if (topNumber > list.size()) {
+            throw new IndexOutOfBoundsException(exceptionMessage);
+        } else if (topNumber < 0) {
+            throw new IllegalArgumentException(exceptionMessage);
+        }
+        return list.subList(0, topNumber);
+    }
+
+    /**
      * Prepares a list of topNumber of violations that show the highest offencesCount
      * when this.violations are aggregated by car across all cities.
-     * @param topNumber     the requested top number of violations in the result list
-     * @return              a list of topNum items that provides the top aggregated violations
+     *
+     * @param topNumber the requested top number of violations in the result list
+     * @return a list of topNum items that provides the top aggregated violations
      */
     public List<Violation> topViolationsByCar(int topNumber) {
 
@@ -163,15 +187,15 @@ public class TrafficTracker {
             return resultComparing;
         });
         //We call our function that merges and sorts the list.
-        comparingTopOffences(violationsByCarList);
-        return violationsByCarList.subList(0, topNumber);
+        return exceptionHandler(topNumber, violationsByCarList);
     }
 
     /**
      * Prepares a list of topNumber of violations that show the highest offencesCount
      * when this.violations are aggregated by city across all cars.
-     * @param topNumber     the requested top number of violations in the result list
-     * @return              a list of topNum items that provides the top aggregated violations
+     *
+     * @param topNumber the requested top number of violations in the result list
+     * @return a list of topNum items that provides the top aggregated violations
      */
     public List<Violation> topViolationsByCity(int topNumber) {
 
@@ -181,14 +205,13 @@ public class TrafficTracker {
                 o1.combineOffencesCounts(o2);
             return resultComparing;
         });
-        //We call our selfmade method and pass the ordered arrayList
-        comparingTopOffences(violationsByCityList);
-        return violationsByCityList.subList(0, topNumber);
+
+        return exceptionHandler(topNumber, violationsByCityList);
     }
 
-    public void comparingTopOffences(OrderedArrayList<Violation> list){
+    public void comparingTopOffences(OrderedArrayList<Violation> list) {
         //We loop through all the violations in an violations list and merge them with the given List.
-        for (Violation violation:this.violations) {
+        for (Violation violation : this.violations) {
             list.merge(violation, Violation::combineOffencesCounts);
         }
 
@@ -202,12 +225,13 @@ public class TrafficTracker {
 
     /**
      * imports a collection of items from a text file which provides one line for each item
-     * @param items         the list to which imported items shall be added
-     * @param file          the source text file
-     * @param converter     a function that can convert a text line into a new item instance
-     * @param <E>           the (generic) type of each item
+     *
+     * @param items     the list to which imported items shall be added
+     * @param file      the source text file
+     * @param converter a function that can convert a text line into a new item instance
+     * @param <E>       the (generic) type of each item
      */
-    public static <E> int importItemsFromFile(List<E> items, File file, Function<String,E> converter) {
+    public static <E> int importItemsFromFile(List<E> items, File file, Function<String, E> converter) {
         int numberOfLines = 0;
 
         Scanner scanner = createFileScanner(file);
@@ -227,6 +251,7 @@ public class TrafficTracker {
 
     /**
      * helper method to create a scanner on a file and handle the exception
+     *
      * @param file
      * @return
      */
@@ -237,6 +262,7 @@ public class TrafficTracker {
             throw new RuntimeException("FileNotFound exception on path: " + file.getPath());
         }
     }
+
     private static File createFileFromURL(URL url) {
         try {
             return new File(url.toURI().getPath());
