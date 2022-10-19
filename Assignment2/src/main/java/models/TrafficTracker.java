@@ -35,7 +35,7 @@ public class TrafficTracker {
         // sort the cars for efficient later retrieval
         this.cars.sort();
 
-//        System.out.printf("Imported %d cars from %d lines in %s.\n", this.cars.size(), numberOfLines, resourceName);
+      System.out.printf("Imported %d cars from %d lines in %s.\n", this.cars.size(), numberOfLines, resourceName);
     }
 
     /**
@@ -51,8 +51,8 @@ public class TrafficTracker {
                 this.mergeDetectionsFromVaultRecursively(
                         createFileFromURL(TrafficTracker.class.getResource(resourceName)));
 
-//        System.out.printf("Found %d offences among detections imported from files in %s.\n",
-//                totalNumberOfOffences, resourceName);
+        System.out.printf("Found %d offences among detections imported from files in %s.\n",
+                totalNumberOfOffences, resourceName);
     }
 
     /**
@@ -104,7 +104,7 @@ public class TrafficTracker {
 
         importItemsFromFile(newDetections, file, s -> Detection.fromLine(s, this.cars));
 
-//        System.out.printf("Imported %d detections from %s.\n", newDetections.size(), file.getPath());
+        System.out.printf("Imported %d detections from %s.\n", newDetections.size(), file.getPath());
 
         int totalNumberOfOffences = 0; // tracks the number of offences that emerges from the data in this file
 
@@ -126,27 +126,7 @@ public class TrafficTracker {
      * @return the total amount of money recovered from all violations
      */
     public double calculateTotalFines() {
-
-        return this.violations.aggregate(
-
-                // TODO provide a calculator function for the specified fine scheme
-                //  of €25 per truck-offence and €35 per coach-offence
-                violation -> {
-                    double truckOffence = 25;
-                    double coachOffence = 35;
-                    double totalFines = 0;
-                    boolean isCoach = violation.getCar().getCarType().equals(Car.CarType.Coach);
-                    boolean isTruck = violation.getCar().getCarType().equals(Car.CarType.Truck);
-
-                    if (isCoach) {
-                        totalFines += coachOffence;
-                    } else if (isTruck) {
-                        totalFines += truckOffence;
-                    }
-
-                    return totalFines;
-                }
-        );
+        return this.violations.aggregate(Violation::calculateViolationFines);
     }
 
     /**

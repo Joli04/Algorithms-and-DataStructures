@@ -39,15 +39,15 @@ public class Detection {
         Detection detection;
 
         String text = textLine.replaceAll("\\s+", "");
-        String[] splitter = text.split(",");
+        String[] splitText = text.split(",");
 
-        String licensePlate = splitter[0];
-        String city = splitter[1];
-        String dateTime = splitter[2];
+        String licensePlate = splitText[0];
+        String city = splitText[1];
+        String dateTime = splitText[2];
 
-        int index = cars.indexOf(new Car(licensePlate));
-        if (index != -1) {
-            detection = new Detection(cars.get(index), city, LocalDateTime.parse(dateTime));
+        int indexCar = cars.indexOf(new Car(licensePlate));
+        if (indexCar != -1) {
+            detection = new Detection(cars.get(indexCar), city, LocalDateTime.parse(dateTime));
         } else {
             Car car = new Car(licensePlate);
             cars.add(car);

@@ -17,7 +17,7 @@ public class Violation {
 
         // if cities are the same check, do license plate check
         if(compareCity == 0){
-            return -v1.getCar().getLicensePlate().compareTo(v2.getCar().getLicensePlate());
+            return v1.getCar().getLicensePlate().compareTo(v2.getCar().getLicensePlate());
         }
         return compareCity;
     }
@@ -61,6 +61,14 @@ public class Violation {
         this.offencesCount = offencesCount;
     }
 
+    public static double calculateViolationFines(Violation violation) {
+        if(violation.car.getCarType() == Car.CarType.Truck){
+            return violation.offencesCount * 25;
+        } else if (violation.car.getCarType() == Car.CarType.Coach) {
+            return violation.offencesCount * 35;
+        }
+        return violation.offencesCount;
+    }
     @Override
     public String toString() {
         if (car == null){

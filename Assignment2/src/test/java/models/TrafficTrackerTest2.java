@@ -25,10 +25,10 @@ public class TrafficTrackerTest2 {
     @Test
     public void calculateFines() {
         System.out.println(trafficTracker.calculateTotalFines());
-
         TrafficTracker trafficTracker = new TrafficTracker();
         // no fines
         assertEquals(0, trafficTracker.calculateTotalFines());
+
     }
 
     @DisplayName("Top violations by city")

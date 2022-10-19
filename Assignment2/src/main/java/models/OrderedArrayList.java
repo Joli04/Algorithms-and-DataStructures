@@ -109,18 +109,18 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByIterativeBinarySearch(E searchItem) {
-        int first = 0;
-        int last = nSorted - 1;
+        int firstPositionIndex = 0;
+        int lastPositionIndex = nSorted - 1;
 
-        while (first <= last) {
-            int middle = first + (last - first) / 2;
+        while (firstPositionIndex <= lastPositionIndex) {
+            int middlePositionIndex = firstPositionIndex + (lastPositionIndex - firstPositionIndex) / 2;
 
-            if (ordening.compare(this.get(middle), searchItem) == 0) {
-                return middle;
-            } else if (ordening.compare(this.get(middle), searchItem) < 0) {
-                first = middle + 1;
+            if (ordening.compare(this.get(middlePositionIndex), searchItem) == 0) {
+                return middlePositionIndex;
+            } else if (ordening.compare(this.get(middlePositionIndex), searchItem) < 0) {
+                firstPositionIndex = middlePositionIndex + 1;
             } else {
-                last = middle - 1;
+                lastPositionIndex = middlePositionIndex - 1;
             }
         }
         for (int i = nSorted; i < this.size(); i++) {
@@ -142,17 +142,17 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByRecursiveBinarySearch(E searchItem) {
-        int first = 0;
-        int last = nSorted - 1;
-        if (last >= first) {
-            int middle = first + (last - first) / 2;
+        int firstPositionIndex = 0;
+        int lastPositionIndex = nSorted - 1;
+        if (lastPositionIndex >= firstPositionIndex) {
+            int middlePositionIndex = firstPositionIndex + (lastPositionIndex - firstPositionIndex) / 2;
 
-            if (ordening.compare(this.get(middle), searchItem) == 0) {
-                return middle;
-            } else if (ordening.compare(this.get(middle), searchItem) > 0) {
-                return recursiveHelperMethod(first, middle - 1, searchItem);
+            if (ordening.compare(this.get(middlePositionIndex), searchItem) == 0) {
+                return middlePositionIndex;
+            } else if (ordening.compare(this.get(middlePositionIndex), searchItem) > 0) {
+                return recursiveHelperMethod(firstPositionIndex, middlePositionIndex - 1, searchItem);
             } else {
-                return recursiveHelperMethod(middle + 1, last, searchItem);
+                return recursiveHelperMethod(middlePositionIndex + 1, lastPositionIndex, searchItem);
             }
         }
         for (int i = nSorted; i < this.size(); i++) {
@@ -173,14 +173,14 @@ public class OrderedArrayList<E>
      */
     public int recursiveHelperMethod(int first, int last, E searchItem) {
         if (last >= first) {
-            int middle = first + (last - first) / 2;
+            int middlePositionIndex = first + (last - first) / 2;
             // comparing the items to determine the index
-            if (ordening.compare(this.get(middle), searchItem) == 0) {
-                return middle;
-            } else if (ordening.compare(this.get(middle), searchItem) > 0) {
-                return recursiveHelperMethod(first, middle - 1, searchItem);
+            if (ordening.compare(this.get(middlePositionIndex), searchItem) == 0) {
+                return middlePositionIndex;
+            } else if (ordening.compare(this.get(middlePositionIndex), searchItem) > 0) {
+                return recursiveHelperMethod(first, middlePositionIndex - 1, searchItem);
             } else {
-                return recursiveHelperMethod(middle + 1, last, searchItem);
+                return recursiveHelperMethod(middlePositionIndex + 1, last, searchItem);
             }
         }
         for (int i = nSorted; i < this.size(); i++) {
@@ -213,12 +213,10 @@ public class OrderedArrayList<E>
             return true;
         } else {
             E merged = merger.apply(this.get(matchedItemIndex), newItem);
-
             this.set(matchedItemIndex, merged);
             return false;
         }
     }
-
     /**
      * calculates the total sum of contributions of all items in the list
      *
@@ -228,11 +226,9 @@ public class OrderedArrayList<E>
     @Override
     public double aggregate(Function<E, Double> mapper) {
         double sum = 0.0;
-
         for (E item : this) {
             sum += mapper.apply(item);
         }
-
         return sum;
     }
 }
