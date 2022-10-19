@@ -61,14 +61,6 @@ public class Violation {
         this.offencesCount = offencesCount;
     }
 
-    public static double calculateViolationFines(Violation violation) {
-        if(violation.car.getCarType() == Car.CarType.Truck){
-            return violation.offencesCount * 25;
-        } else if (violation.car.getCarType() == Car.CarType.Coach) {
-            return violation.offencesCount * 35;
-        }
-        return violation.offencesCount;
-    }
     @Override
     public String toString() {
         if (car == null){

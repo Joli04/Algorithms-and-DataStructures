@@ -19,6 +19,11 @@ public class TrafficTracker {
         violations = new OrderedArrayList<>(Violation::compareByLicensePlateAndCity);
     }
 
+    //A method we created for our test in TrafficTrackerTest2
+    public void add(Violation violation){
+        violations.add(violation);
+    }
+
     /**
      * imports all registered cars from a resource file that has been provided by the RDW
      *
@@ -66,16 +71,12 @@ public class TrafficTracker {
         if (file.isDirectory()) {
             // the file is a folder (a.k.a. directory)
             //  retrieve a list of all files and sub folders in this directory
-            // TODO recursively process all files and sub folders from the filesInDirectory list.
-            //  also track the total number of offences found
-
             File[] filesInDirectory = Objects.requireNonNullElse(file.listFiles(), new File[0]);
+            int directoryLength = filesInDirectory.length;
 
-            for (File value : filesInDirectory) {
-                File[] files = value.listFiles();
-                assert files != null;
-                for (File f : files) {
-                    totalNumberOfOffences += mergeDetectionsFromFile(f);
+            if (directoryLength > 0) {
+                for (File f : filesInDirectory) {
+                    totalNumberOfOffences += mergeDetectionsFromVaultRecursively(f);
                 }
             }
 
@@ -126,7 +127,19 @@ public class TrafficTracker {
      * @return the total amount of money recovered from all violations
      */
     public double calculateTotalFines() {
-        return this.violations.aggregate(Violation::calculateViolationFines);
+        return this.violations.aggregate( violation -> {
+            final double truckOffence = 25;
+            final double coachOffence = 35;
+            boolean isCoach = violation.getCar().getCarType().equals(Car.CarType.Coach);
+            boolean isTruck = violation.getCar().getCarType().equals(Car.CarType.Truck);
+
+            if(isTruck){
+                return violation.getOffencesCount() * truckOffence;
+            } else if (isCoach) {
+                return violation.getOffencesCount() * coachOffence;
+            }
+            return 0.0;
+        });
     }
 
     /**
@@ -137,16 +150,16 @@ public class TrafficTracker {
      * @return (sub)List
      */
     private List<Violation> exceptionHandler(int topNumber, OrderedArrayList<Violation> list) {
-        //We call our selfmade method and pass the ordered arrayList
-        comparingTopOffences(list);
-        String exceptionMessage = String.format("%d is not valid (0-%d)", topNumber, list.size());
-        if (topNumber > list.size()) {
-            throw new IndexOutOfBoundsException(exceptionMessage);
-        } else if (topNumber < 0) {
-            throw new IllegalArgumentException(exceptionMessage);
+            //We call our selfmade method and pass the ordered arrayList
+            comparingTopOffences(list);
+            String exceptionMessage = String.format("%d is not valid (0-%d)", topNumber, list.size());
+            if (topNumber > list.size()) {
+                throw new IndexOutOfBoundsException(exceptionMessage);
+            } else if (topNumber < 0) {
+                throw new IllegalArgumentException(exceptionMessage);
+            }
+            return list.subList(0, topNumber);
         }
-        return list.subList(0, topNumber);
-    }
 
     /**
      * Prepares a list of topNumber of violations that show the highest offencesCount
