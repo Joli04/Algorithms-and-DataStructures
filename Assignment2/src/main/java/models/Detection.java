@@ -1,5 +1,7 @@
 package models;
-
+/**
+ * @author Joli-Coeur Weibolt and Vincent Ohr
+ */
 import java.time.LocalDateTime;
 import java.util.List;
 

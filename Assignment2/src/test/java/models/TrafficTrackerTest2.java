@@ -9,7 +9,9 @@ import java.time.LocalDate;
 import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * @author Joli-Coeur Weibolt and Vincent Ohr
+ */
 public class TrafficTrackerTest2 {
 
     private TrafficTracker trafficTracker;
@@ -55,44 +57,6 @@ public class TrafficTrackerTest2 {
         // no fines
         assertEquals(25.0, trafficTracker.calculateTotalFines());
         assertEquals(35.0, tracker.calculateTotalFines());
-//
-//        double totalfines = 207540;
-//        double truckOffence = 25;
-//        double coachOffence = 35;
-//        System.out.println(trafficTracker.calculateTotalFines());
-//        assertEquals(totalfines, trafficTracker.calculateTotalFines());
-//
-//        Car carTruck = new Car("DCI-45-J",4, Car.CarType.Truck, Car.FuelType.Diesel,
-//                LocalDate.of(2010,9,12));
-//
-//        Car ca = new Car("DCI-45-J",4, Car.CarType.Truck, Car.FuelType.Diesel,
-//                LocalDate.of(2010,9,12));
-//
-//        Violation violation = new Violation(carTruck,"Amsterdam");
-//        trafficTracker.add(violation);
-//
-//
-//        System.out.println(trafficTracker.calculateTotalFines());
-//
-//
-//        assertEquals(totalfines + truckOffence, trafficTracker.calculateTotalFines());
-//
-//
-//        TrafficTracker tracker = new TrafficTracker();
-//
-//        Violation violationscootie;
-//
-//        for (int i = 0; i < 100; i++) {
-//            Car scootie = new Car("SUS-41-A",3, Car.CarType.Coach, Car.FuelType.Diesel,
-//                    LocalDate.of(2011,8,22));
-//            scootie.setCarType();
-//            cars.add(scootie);
-//            violationscootie = new Violation(cars.get(i),"Rotterdam");
-//            tracker.add(violationscootie);
-//        }
-//
-//        assertEquals(coachOffence*100, tracker.calculateTotalFines());
-//        System.out.println(tracker.calculateTotalFines());
     }
 
     public void exampleCar(){

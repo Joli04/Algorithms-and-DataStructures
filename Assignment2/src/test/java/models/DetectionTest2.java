@@ -11,7 +11,9 @@ import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-
+/**
+ * @author Joli-Coeur Weibolt and Vincent Ohr
+ */
 public class DetectionTest2 {
 
     Car ferrari, audi, bmw, mercedes, lambo, hyundai;

@@ -1,5 +1,7 @@
 package models;
-
+/**
+ * @author Joli-Coeur Weibolt and Vincent Ohr
+ */
 import java.time.LocalDate;
 
 public class Car implements Comparable<Car> {

@@ -56,17 +56,17 @@ public class OrderedArrayList<E>
         E removed = super.remove(index);
 
         if (index <= nSorted) {
-            this.nSorted -= 1;
+            this.nSorted--;
         }
         return removed;
     }
 
     @Override
-    public boolean remove(Object object) {
-        boolean removed = super.remove(object);
+    public boolean remove(Object obj) {
+        boolean removed = super.remove(obj);
 
         if (removed) {
-            this.nSorted -= 1;
+            this.nSorted--;
         }
         return removed;
     }
@@ -166,21 +166,21 @@ public class OrderedArrayList<E>
 
     /**
      * helper method
-     * @param first first index of the sequence
-     * @param last last index of the sequence
+     * @param firstPositionIndex first index of the sequence
+     * @param lastPositionIndex last index of the sequence
      * @param searchItem search for the item
      * @return index of the searchItem
      */
-    public int recursiveHelperMethod(int first, int last, E searchItem) {
-        if (last >= first) {
-            int middlePositionIndex = first + (last - first) / 2;
+    public int recursiveHelperMethod(int firstPositionIndex, int lastPositionIndex, E searchItem) {
+        if (lastPositionIndex >= firstPositionIndex) {
+            int middlePositionIndex = firstPositionIndex + (lastPositionIndex - firstPositionIndex) / 2;
             // comparing the items to determine the index
             if (ordening.compare(this.get(middlePositionIndex), searchItem) == 0) {
                 return middlePositionIndex;
             } else if (ordening.compare(this.get(middlePositionIndex), searchItem) > 0) {
-                return recursiveHelperMethod(first, middlePositionIndex - 1, searchItem);
+                return recursiveHelperMethod(firstPositionIndex, middlePositionIndex - 1, searchItem);
             } else {
-                return recursiveHelperMethod(middlePositionIndex + 1, last, searchItem);
+                return recursiveHelperMethod(middlePositionIndex + 1, lastPositionIndex, searchItem);
             }
         }
         for (int i = nSorted; i < this.size(); i++) {
@@ -199,7 +199,7 @@ public class OrderedArrayList<E>
      * @param newItem
      * @param merger  a function that takes two items and returns an item that contains the merged content of
      *                the two items according to some merging rule.
-     *                e.g. a merger could add the value of attribute X of the second item
+     *                e.g. a merger could   add the value of attribute X of the second item
      *                to attribute X of the first item and then return the first item
      * @return whether a new item was added to the list or not
      */

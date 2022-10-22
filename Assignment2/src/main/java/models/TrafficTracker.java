@@ -1,5 +1,7 @@
 package models;
-
+/**
+ * @author Joli-Coeur Weibolt and Vincent Ohr
+ */
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
@@ -103,7 +105,7 @@ public class TrafficTracker {
         // use a regular ArrayList to load the raw detection info from the file
         List<Detection> newDetections = new ArrayList<>();
 
-        importItemsFromFile(newDetections, file, s -> Detection.fromLine(s, this.cars));
+        importItemsFromFile(newDetections, file, textLine -> Detection.fromLine(textLine, this.cars));
 
         System.out.printf("Imported %d detections from %s.\n", newDetections.size(), file.getPath());
 
@@ -191,11 +193,11 @@ public class TrafficTracker {
      * @return a list of topNum items that provides the top aggregated violations
      */
     public List<Violation> topViolationsByCity(int topNumber) {
-
         OrderedArrayList<Violation> violationsByCityList = new OrderedArrayList<>((o1, o2) -> {
             int resultComparing = o1.getCity().compareTo(o2.getCity());
-            if (resultComparing == 0)
+            if (resultComparing == 0) {
                 o1.combineOffencesCounts(o2);
+            }
             return resultComparing;
         });
 

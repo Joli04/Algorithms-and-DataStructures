@@ -1,5 +1,7 @@
 package models;
-
+/**
+ * @author Joli-Coeur Weibolt and Vincent Ohr
+ */
 public class Violation {
     private final Car car;
     private final String city;
@@ -21,8 +23,6 @@ public class Violation {
         }
         return compareCity;
     }
-
-
 
     /**
      * Aggregates this violation with the other violation by adding their counts and

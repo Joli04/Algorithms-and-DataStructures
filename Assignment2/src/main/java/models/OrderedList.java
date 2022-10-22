@@ -1,5 +1,7 @@
 package models;
-
+/**
+ * @author Joli-Coeur Weibolt and Vincent Ohr
+ */
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BinaryOperator;
