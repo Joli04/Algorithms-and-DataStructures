@@ -204,16 +204,23 @@ public class TrafficTracker {
         return exceptionHandler(topNumber, violationsByCityList);
     }
 
+    /**
+     * Add the offence counts to each violation.
+     * Create comparator to be able to eventually sort in descending order.
+     * Add the comparator as a parameter to the sort method.
+     * @param list Violations
+     */
     public void comparingTopOffences(OrderedArrayList<Violation> list) {
-        //We loop through all the violations in an violations list and merge them with the given List.
+        //We loop through all the violations in a violations list and merge them with the given List.
         for (Violation violation : this.violations) {
             list.merge(violation, Violation::combineOffencesCounts);
         }
 
-        //We make a Comparator where we compare all the offences count.
-        Comparator<Violation> violationOffencesComparator = Comparator.comparing(Violation::getOffencesCount);
-        //We then make a reversed Comparator that reverses the previous comparator.
-        Comparator<Violation> violationReversedComparator = violationOffencesComparator.reversed();
+        // We make a Comparator where we compare all the offences count.
+        // Then call the reversed() to show the list in descending order
+        Comparator<Violation> violationReversedComparator =
+                Comparator.comparing(Violation::getOffencesCount).reversed();
+
         // We sort our given list with the reverse Comparator that we made
         list.sort(violationReversedComparator);
     }
