@@ -27,7 +27,6 @@ public class Song {
     private final String title;
     private final Language language;
     private HashMap<Country, Integer> streamsPerCountryMap;
-    private int totalStreams;
 
     // TODO add instance variable(s) to track the streams counts per country
     //  choose a data structure that you deem to be most appropriate for this application.
@@ -41,7 +40,6 @@ public class Song {
         this.title = title;
         this.language = language;
         this.streamsPerCountryMap = new HashMap<>();
-        this.totalStreams = 0;
         // TODO initialise streams counts per country as appropriate.
 
     }
@@ -57,7 +55,7 @@ public class Song {
         for (Country c : Country.values()) {
             if (c.equals(country)) {
                 // if it exists replace key value rather than add it again
-                    streamsPerCountryMap.put(c, streamsCount);
+                streamsPerCountryMap.put(c, streamsCount);
             }
         }
     }
@@ -102,8 +100,7 @@ public class Song {
         // TODO compare the total of stream counts of this song across all countries
         //  with the total of the other song
 
-
-        return 0;    // replace by proper result
+        return -Integer.compare(this.getStreamsCountTotal(), other.getStreamsCountTotal());
     }
 
     /**
@@ -116,9 +113,11 @@ public class Song {
     public int compareForDutchNationalChart(Song other) {
         // TODO compare this song with the other song
         //  ordening all Dutch songs upfront and then by decreasing total number of streams
+        int compareLanguage = this.language.compareTo(other.language);
+        if(compareLanguage == 0)
+            return -Integer.compare(this.getStreamsCountTotal(),other.getStreamsCountTotal());
 
-
-        return 0;    // replace by proper result
+        return compareLanguage;    // replace by proper result
     }
 
 
