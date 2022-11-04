@@ -44,12 +44,12 @@ public class SorterImpl<E> implements Sorter<E> {
         // TODO provide a recursive quickSort implementation,
         //  that is different from the example given in the lecture
 
-        quickSortPart(items, 0, items.size() - 1, comparator);
+        quickSort(items, 0, items.size() - 1, comparator);
 
         return items;   // replace as you find appropriate
     }
 
-    private void quickSortPart(List<E> items, int lowIndex, int highIndex, Comparator<E> comparator)  {
+    private void quickSort(List<E> items, int lowIndex, int highIndex, Comparator<E> comparator)  {
         if (lowIndex >= highIndex){
             return;
         }
@@ -70,8 +70,8 @@ public class SorterImpl<E> implements Sorter<E> {
         }
         swap(items, lp, highIndex);
 
-        quickSortPart(items, lowIndex, lp-1, comparator);
-        quickSortPart(items, lp-1, highIndex, comparator);
+        quickSort(items, lowIndex, lp-1, comparator);
+        quickSort(items, lp+1, highIndex, comparator);
     }
     private void swap(List<E> items, int index1, int index2){
         E temp = items.get(index1);
