@@ -49,31 +49,59 @@ public class SorterImpl<E> implements Sorter<E> {
         return items;   // replace as you find appropriate
     }
 
-    private void quickSort(List<E> items, int lowIndex, int highIndex, Comparator<E> comparator)  {
-        if (lowIndex >= highIndex){
+    /**
+     * Overloaded method
+     * recursive purposes
+     * choose a pivot
+     * partition by putting the smaller items to the left of the pivot and
+     * the greater items to the right of the pivot (using comparator)
+     *
+     * @param items list to quicksort
+     * @param lowIndex use for range
+     * @param highIndex use for range
+     * @param comparator comparing items at certain pointers with the pivot
+     */
+    private void quickSort(List<E> items, int lowIndex, int highIndex, Comparator<E> comparator) {
+        // just return, only one element left, no need to sort
+        if (lowIndex >= highIndex) {
             return;
         }
         E pivot = items.get(highIndex);
 
-        int lp = lowIndex;
-        int rp = highIndex;
+        int leftPointer = lowIndex;
+        int rightPointer = highIndex;
 
-        while (lp < rp){
-            while (comparator.compare(items.get(lp),pivot) <= 0 && lp < rp){
-                lp++;
+        // loop till both cross paths
+        while (leftPointer < rightPointer) {
+            while (comparator.compare(items.get(leftPointer), pivot) <= 0 && leftPointer < rightPointer) {
+                leftPointer++;
             }
-            while (comparator.compare(items.get(rp),pivot) >= 0 && lp < rp){
-                rp--;
+            while (comparator.compare(items.get(rightPointer), pivot) >= 0 && leftPointer < rightPointer) {
+                rightPointer--;
             }
 
-            swap(items, lp, rp);
+            // at this point leftPointer is pointing to a larger number than the pivot
+            // And the right pointer the other way around, so we swap
+            swap(items, leftPointer, rightPointer);
         }
-        swap(items, lp, highIndex);
+        // then we want to swap the pointer with the pivot
+        // we use highIndex because we chose the last element as our pivot
+        swap(items, leftPointer, highIndex);
 
-        quickSort(items, lowIndex, lp-1, comparator);
-        quickSort(items, lp+1, highIndex, comparator);
+        // sort the left side of the pivot, so leftPointer - 1
+        quickSort(items, lowIndex, leftPointer - 1, comparator);
+
+        // sort the right side of the pivot, leftPointer + 1
+        quickSort(items, leftPointer + 1, highIndex, comparator);
     }
-    private void swap(List<E> items, int index1, int index2){
+
+    /**
+     * Helper method to swap the pointers
+     * @param items
+     * @param index1
+     * @param index2
+     */
+    private void swap(List<E> items, int index1, int index2) {
         E temp = items.get(index1);
         items.set(index1, items.get(index2));
         items.set(index2, temp);
