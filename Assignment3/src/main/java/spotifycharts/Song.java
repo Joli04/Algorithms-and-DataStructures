@@ -100,6 +100,7 @@ public class Song {
         // TODO compare the total of stream counts of this song across all countries
         //  with the total of the other song
 
+        // negate because highest total number of streams upfront
         return -Integer.compare(this.getStreamsCountTotal(), other.getStreamsCountTotal());
     }
 
@@ -115,6 +116,7 @@ public class Song {
         //  ordening all Dutch songs upfront and then by decreasing total number of streams
         int compareLanguage = this.language.compareTo(other.language);
         if(compareLanguage == 0)
+            // negate, decreasing order
             return -Integer.compare(this.getStreamsCountTotal(),other.getStreamsCountTotal());
 
         return compareLanguage;    // replace by proper result
