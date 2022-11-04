@@ -1,7 +1,6 @@
 package spotifycharts;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 public class SorterImpl<E> implements Sorter<E> {
@@ -17,6 +16,15 @@ public class SorterImpl<E> implements Sorter<E> {
     public List<E> selInsBubSort(List<E> items, Comparator<E> comparator) {
         // TODO implement selection sort or insertion sort or bubble sort
 
+        for (int i = 0; i < items.size() - 1; i++) {
+            for (int j = 0; j < items.size() - i - 1; j++) {
+                if (comparator.compare(items.get(j),items.get(j + 1)) > 0) {
+                    E temp = items.get(j);
+                    items.set(j, items.get(j+1));
+                    items.set(j + 1, temp);
+                }
+            }
+        }
 
 
 
