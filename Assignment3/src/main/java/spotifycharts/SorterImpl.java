@@ -193,52 +193,19 @@ public class SorterImpl<E> implements Sorter<E> {
         // TODO swim items[heapSize-1] up the heap until
         //      i==0 || items[(i-1]/2] <= items[i]
 
-        int childIndex = heapSize;
-        int parentIndex = childIndex / 2;
-        E swimmer = items.get(childIndex);
 
-        while (parentIndex > 0 && comparator.compare(swimmer, items.get(parentIndex)) < 0) {
-            items.set(childIndex, items.get(parentIndex));
-            items.set(parentIndex, swimmer);
+        int parentIndex = (heapSize - 1) / 2;
 
-            childIndex = parentIndex;
-            parentIndex = childIndex / 2;
+        if (heapSize >= items.size()) {
+            return;
         }
-//        int compare = comparator.compare(swimmer, items.get(parentIndex));
 
-//        for (int i = 0; i <= items.size(); i++) {
-//            if (i != 0 || compare >= 1) {
-//                items.set(childIndex, items.get(parentIndex));
-//                items.set(parentIndex, swimmer);
-//                childIndex = parentIndex;
-//                parentIndex = childIndex / 2;
-//
-//            }
-//        }
+        while (comparator.compare(items.get(heapSize), items.get(parentIndex)) < 0) {
+            swap(items, heapSize, parentIndex);
+            heapSize = parentIndex;
+            parentIndex = (heapSize - 1) / 2;
 
-
-
-//        int size = heapSize - 1;
-//        int parent = (items.size() - 1) / 2;
-//
-//        E child = items.get(size);
-//        for (int i = 0; i <= items.size(); i++) {
-//
-//            int compare = comparator.compare(child, parent);
-//            if (i != 0 || compare > 1) {
-//                swap(items, items.indexOf(parent), items.indexOf(child));
-//            }
-//        }
-//
-//        for (int i = 0; i < items.size() ; i++) {
-//            int compare = comparator.compare(items.get((i-1)/2), items.get(i));
-//            if( i!=0 || compare >= 0){
-//                swap(items, i, items.indexOf(items.get(heapSize-1)));
-//            }
-//            else {
-//                return;
-//            }
-//        }
+        }
     }
 
     /**
@@ -255,23 +222,44 @@ public class SorterImpl<E> implements Sorter<E> {
     protected void heapSink(List<E> items, int heapSize, Comparator<E> comparator) {
         // TODO sink items[0] down the heap until
         //      2*i+1>=heapSize || (items[i] <= items[2*i+1] && items[i] <= items[2*i+2])
-        int parentIndex = 1;
-        int childIndex = 2;
-        E sinker = items.get(parentIndex);
+//        int parentIndex = 1;
+//        int childIndex = 2;
+//        E sinker = items.get(parentIndex);
+//
+//        while (childIndex <= heapSize) {
+//            E child = items.get(childIndex);
+//
+//            if (childIndex + 1 <= heapSize && comparator.compare(items.get(childIndex + 1), child) < 0) {
+//                childIndex++;
+//                child = items.get(childIndex);
+//            }
+//            if (comparator.compare(sinker, child) <= 0) {
+//                break;
+//            }
+//            items.set(parentIndex, child);
+//            items.set(childIndex, sinker);
+//            parentIndex = childIndex;
+//        }
 
-        while (childIndex <= heapSize) {
-            E child = items.get(childIndex);
-
-            if (childIndex + 1 <= heapSize && comparator.compare(items.get(childIndex + 1), child) < 0) {
-                childIndex++;
-                child = items.get(childIndex);
+        //下沉操作：
+        int i = 0;
+        int left=i*2+1;
+        while (left<heapSize){
+            //largest找到子节点哪个大
+            int largest=left;
+            if(left+1<heapSize){//存在右孩子
+                largest=comparator.compare(items.get(left+1),items.get(left))>0?left+1:left;
             }
-            if (comparator.compare(sinker, child) <= 0) {
+
+            if(comparator.compare(items.get(i),items.get(largest))> 0){
                 break;
             }
-            items.set(parentIndex, child);
-            items.set(childIndex, sinker);
-            parentIndex = childIndex;
+
+            swap(items,largest,i);
+            //下沉
+            i=largest;
+            left=i*2+1;//记得更新这个！
+            i++;
         }
 
 
