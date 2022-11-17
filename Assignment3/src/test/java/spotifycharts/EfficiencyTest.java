@@ -26,22 +26,35 @@ public class EfficiencyTest {
         ChartsCalculator chartsCalculator = new ChartsCalculator(1L);
         this.songSorter = new SongSorter();
         test = new SorterImpl<>();
-        fewSongs = new ArrayList<>(chartsCalculator.registerStreamedSongs(100000));
+        fewSongs = new ArrayList<>(chartsCalculator.registerStreamedSongs(100));
         hundred = new ArrayList<>(fewSongs);
 //        manySongs = new ArrayList<>(chartsCalculator.registerStreamedSongs(2));
     }
 
 
-    public void quicksortEfficiency() {
+//    public void quicksortEfficiency() {
+//        System.gc();
+//        test.quickSort(hundred, Comparator.comparing(Song::getStreamsCountTotal));
+//    }
+
+    public void bubbleEfficiency() {
         System.gc();
-        test.quickSort(hundred, Comparator.comparing(Song::getStreamsCountTotal));
+        test.selInsBubSort(hundred, Comparator.comparing(Song::getStreamsCountTotal));
     }
 
-
+//    @Test
+//    public void test() {
+//        long start = System.nanoTime();
+//        quicksortEfficiency();
+//        long end = System.nanoTime();
+//        long duration = end - start;
+//        System.out.println((double)duration*Math.pow(10,-9));
+//
+//    }
     @Test
-    public void test() {
+    public void testBubble() {
         long start = System.nanoTime();
-        quicksortEfficiency();
+        bubbleEfficiency();
         long end = System.nanoTime();
         long duration = end - start;
         System.out.println((double)duration*Math.pow(10,-9));

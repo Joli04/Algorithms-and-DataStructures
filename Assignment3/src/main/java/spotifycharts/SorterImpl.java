@@ -162,13 +162,9 @@ public class SorterImpl<E> implements Sorter<E> {
 
             // TODO swap item[0] and item[i];
             //  this moves item[0] to its designated position
-
-
+            heapSink(items, i, reverseComparator);
             // TODO the new root may have violated the heap condition
             //  repair the heap condition on the remaining heap of size i
-//            items.set(0, items.get(i));
-
-
         }
 
         return items;
@@ -190,18 +186,15 @@ public class SorterImpl<E> implements Sorter<E> {
         // TODO swim items[heapSize-1] up the heap until
         //      i==0 || items[(i-1]/2] <= items[i]
 
+        int child = (heapSize - 1);
+        int parent = child / 2;
+        E swimmer = items.get(child);
 
-        int parentIndex = (heapSize - 1) / 2;
-
-        if (heapSize >= items.size()) {
-            return;
-        }
-
-        while (comparator.compare(items.get(heapSize), items.get(parentIndex)) < 0) {
-            swap(items, heapSize, parentIndex);
-            heapSize = parentIndex;
-            parentIndex = (heapSize - 1) / 2;
-
+        while (comparator.compare(items.get(parent), swimmer) > 0) {
+            swap(items, child, parent);
+            heapSize = (heapSize - 1) / 2;
+            child = parent;
+            parent = child / 2;
         }
     }
 
@@ -218,19 +211,28 @@ public class SorterImpl<E> implements Sorter<E> {
      */
     protected void heapSink(List<E> items, int heapSize, Comparator<E> comparator) {
         // TODO sink items[0] down the heap until
-        //      2*i+1>=heapSize || (items[i] <= items[2*i+1] && items[i] <= items[2*i+2])
+        //      2i+1>=heapSize || (items[i] <= items[2i+1] && items[i] <= items[2i+2])
 
-        int beginIndex = 0;
-        if(heapSize >= items.size()){
-            return;
+        int childIndex = 1;
+        int parent = 0;
+
+        E sinker = items.get(parent);
+        while (childIndex < heapSize) {
+            E childItem = items.get(childIndex);
+
+            if (childIndex + 1 < heapSize && comparator.compare(items.get(childIndex + 1), childItem) < 0) {
+                childIndex++;
+                childItem = items.get(childIndex);
+            }
+
+            if (comparator.compare(sinker, childItem) <= 0) {
+                return;
+            } else {
+                swap(items, parent, items.indexOf(childItem));
+                parent = childIndex;
+                childIndex = 2 * parent;
+            }
         }
-        while (comparator.compare(items.get(heapSize), items.get(beginIndex)) < 0) {
-            swap(items, heapSize, beginIndex);
-            heapSize = beginIndex;
-            beginIndex = (heapSize - 1) / 2;
-
-        }
-
-
     }
+
 }
