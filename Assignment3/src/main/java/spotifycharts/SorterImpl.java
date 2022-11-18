@@ -17,17 +17,15 @@ public class SorterImpl<E> implements Sorter<E> {
     public List<E> selInsBubSort(List<E> items, Comparator<E> comparator) {
         // TODO implement selection sort or insertion sort or bubble sort
 
-        for (int i = 0; i < items.size() - 1; i++) {
-            for (int j = 0; j < items.size() - i - 1; j++) {
+        int size = items.size()-1;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size - i; j++) {
+                //if the item is bigger than the next one, we swap them.
                 if (comparator.compare(items.get(j), items.get(j + 1)) > 0) {
-                    E temp = items.get(j);
-                    items.set(j, items.get(j + 1));
-                    items.set(j + 1, temp);
+                    swap(items, j, j+1);
                 }
             }
         }
-
-
         return items;   // replace as you find appropriate
     }
 
@@ -158,13 +156,12 @@ public class SorterImpl<E> implements Sorter<E> {
             // loop-invariant: items[i+1..-1] contains the tail part of the sorted lead collection
             // position 0 holds the root item of a heap of size i+1 organised by reverseComparator
             // this root item is the worst item of the remaining front part of the lead collection
+
+            //We swap the two items, so item[0] will be at its designated position
             swap(items, 0, i);
 
-            // TODO swap item[0] and item[i];
-            //  this moves item[0] to its designated position
+            //repairs the heap condition on the remaining heap of size i
             heapSink(items, i, reverseComparator);
-            // TODO the new root may have violated the heap condition
-            //  repair the heap condition on the remaining heap of size i
         }
 
         return items;
@@ -219,10 +216,10 @@ public class SorterImpl<E> implements Sorter<E> {
 
         //We first declare two ints, the child and parent
         int childIdx = 1;
-        int parent = 0;
+        int parentIdx = 0;
 
         //We declare an E element named sinker and use a get method to get the item of this specific index.
-        E sinker = items.get(parent);
+        E sinker = items.get(parentIdx);
 
         while (childIdx < heapSize) {
             E childItem = items.get(childIdx);
@@ -236,9 +233,9 @@ public class SorterImpl<E> implements Sorter<E> {
             //We compare our sinker item and childItem and if our sinker
             // item is greater than our child item the following code will be executed
             if (comparator.compare(sinker, childItem) > 0) {
-                swap(items, parent, items.indexOf(childItem));
-                parent = childIdx;
-                childIdx = 2 * parent;
+                swap(items, parentIdx, items.indexOf(childItem));
+                parentIdx = childIdx;
+                childIdx = 2 * parentIdx;
             } else {
                 return;
             }
