@@ -26,7 +26,7 @@ public class EfficiencyTest {
         ChartsCalculator chartsCalculator = new ChartsCalculator(1L);
         this.songSorter = new SongSorter();
         test = new SorterImpl<>();
-        fewSongs = new ArrayList<>(chartsCalculator.registerStreamedSongs(100));
+        fewSongs = new ArrayList<>(chartsCalculator.registerStreamedSongs(5000000));
         hundred = new ArrayList<>(fewSongs);
 //        manySongs = new ArrayList<>(chartsCalculator.registerStreamedSongs(2));
     }
@@ -37,9 +37,14 @@ public class EfficiencyTest {
 //        test.quickSort(hundred, Comparator.comparing(Song::getStreamsCountTotal));
 //    }
 
-    public void bubbleEfficiency() {
+//    public void bubbleEfficiency() {
+//        System.gc();
+//        test.selInsBubSort(hundred, Comparator.comparing(Song::getStreamsCountTotal));
+//    }
+
+    public void heapEfficiency() {
         System.gc();
-        test.selInsBubSort(hundred, Comparator.comparing(Song::getStreamsCountTotal));
+        test.topsHeapSort(10,hundred, Comparator.comparing(Song::getStreamsCountTotal));
     }
 
 //    @Test
@@ -51,13 +56,21 @@ public class EfficiencyTest {
 //        System.out.println((double)duration*Math.pow(10,-9));
 //
 //    }
+//    @Test
+//    public void testBubble() {
+//        long start = System.nanoTime();
+//        bubbleEfficiency();
+//        long end = System.nanoTime();
+//        long duration = end - start;
+//        System.out.println((double)duration*Math.pow(10,-9));
+//
+//    }
     @Test
-    public void testBubble() {
-        long start = System.nanoTime();
-        bubbleEfficiency();
-        long end = System.nanoTime();
-        long duration = end - start;
-        System.out.println((double)duration*Math.pow(10,-9));
-
+    public void testHeap() {
+            long start = System.nanoTime();
+            heapEfficiency();
+            long end = System.nanoTime();
+            long duration = end - start;
+            System.out.println((double)duration*Math.pow(10,-9));
     }
 }

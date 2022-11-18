@@ -186,15 +186,19 @@ public class SorterImpl<E> implements Sorter<E> {
         // TODO swim items[heapSize-1] up the heap until
         //      i==0 || items[(i-1]/2] <= items[i]
 
-        int child = (heapSize - 1);
-        int parent = child / 2;
-        E swimmer = items.get(child);
+        //We first declare two ints, the child and parent
+        int childIdx = (heapSize - 1);
+        int parentIdx = childIdx / 2;
+        //We declare an E element named swimmer and use a get method to get the item of this specific index.
+        E swimmer = items.get(childIdx);
 
-        while (comparator.compare(items.get(parent), swimmer) > 0) {
-            swap(items, child, parent);
+        //We compare the item at index child and parent with each other
+        // and execute the following code if our parent is bigger than the child
+        while (comparator.compare(items.get(parentIdx), swimmer) > 0) {
+            swap(items, childIdx, parentIdx);
             heapSize = (heapSize - 1) / 2;
-            child = parent;
-            parent = child / 2;
+            childIdx = parentIdx;
+            parentIdx = childIdx / 2;
         }
     }
 
@@ -213,24 +217,30 @@ public class SorterImpl<E> implements Sorter<E> {
         // TODO sink items[0] down the heap until
         //      2i+1>=heapSize || (items[i] <= items[2i+1] && items[i] <= items[2i+2])
 
-        int childIndex = 1;
+        //We first declare two ints, the child and parent
+        int childIdx = 1;
         int parent = 0;
 
+        //We declare an E element named sinker and use a get method to get the item of this specific index.
         E sinker = items.get(parent);
-        while (childIndex < heapSize) {
-            E childItem = items.get(childIndex);
 
-            if (childIndex + 1 < heapSize && comparator.compare(items.get(childIndex + 1), childItem) < 0) {
-                childIndex++;
-                childItem = items.get(childIndex);
+        while (childIdx < heapSize) {
+            E childItem = items.get(childIdx);
+            int newChildIdx = childIdx+1;
+
+            if (newChildIdx < heapSize && comparator.compare(items.get(newChildIdx), childItem) < 0) {
+                childIdx++;
+                childItem = items.get(childIdx);
             }
 
-            if (comparator.compare(sinker, childItem) <= 0) {
-                return;
-            } else {
+            //We compare our sinker item and childItem and if our sinker
+            // item is greater than our child item the following code will be executed
+            if (comparator.compare(sinker, childItem) > 0) {
                 swap(items, parent, items.indexOf(childItem));
-                parent = childIndex;
-                childIndex = 2 * parent;
+                parent = childIdx;
+                childIdx = 2 * parent;
+            } else {
+                return;
             }
         }
     }
