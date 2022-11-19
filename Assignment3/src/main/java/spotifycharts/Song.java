@@ -52,12 +52,8 @@ public class Song {
      */
     public void setStreamsCountOfCountry(Country country, int streamsCount) {
         // TODO register the streams count for the given country.
-        for (Country c : Country.values()) {
-            if (c.equals(country)) {
-                // if it exists replace key value rather than add it again
-                streamsPerCountryMap.put(c, streamsCount);
-            }
-        }
+        // if it exists replace key value rather than add it again
+        streamsPerCountryMap.put(country, streamsCount);
     }
 
     /**
@@ -115,9 +111,10 @@ public class Song {
         // TODO compare this song with the other song
         //  ordening all Dutch songs upfront and then by decreasing total number of streams
         int compareLanguage = this.language.compareTo(other.language);
-        if(compareLanguage == 0)
+        if(compareLanguage == 0){
             // negate, decreasing order
             return -Integer.compare(this.getStreamsCountTotal(),other.getStreamsCountTotal());
+        }
 
         return compareLanguage;    // replace by proper result
     }
