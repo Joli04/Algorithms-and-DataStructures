@@ -62,11 +62,9 @@ public class SongTwoTest {
     public void compareTest() {
         assertEquals(1, -compareStreams.compare(song21, songKen));
 
-        // Joli-Coeur decides to 'Be Humble'
         songKen.setStreamsCountOfCountry(Song.Country.NL, 226);
         assertEquals(0, -compareStreams.compare(song21, songKen));
 
-        // Still not humble enough, streams it two more times
         songKen.setStreamsCountOfCountry(Song.Country.NL, 228);
         assertEquals(-1, -compareStreams.compare(song21, songKen));
 
