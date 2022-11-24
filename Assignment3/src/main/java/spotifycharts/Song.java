@@ -65,7 +65,7 @@ public class Song {
     public int getStreamsCountOfCountry(Country country) {
         // TODO retrieve the streams count for the given country.
 
-        if(streamsPerCountryMap.containsKey(country)){
+        if (streamsPerCountryMap.containsKey(country)) {
             return streamsPerCountryMap.get(country);
         }
         return 0; // replace by the proper amount
@@ -111,12 +111,14 @@ public class Song {
         // TODO compare this song with the other song
         //  ordening all Dutch songs upfront and then by decreasing total number of streams
         int compareLanguage = this.language.compareTo(other.language);
-        if(compareLanguage == 0){
+        if (compareLanguage == 0) {
             // negate, decreasing order
-            return -Integer.compare(this.getStreamsCountTotal(),other.getStreamsCountTotal());
+            return compareByHighestStreamsCountTotal(other);
+        } else if (this.language != Language.NL && other.language != Language.NL) {
+            return compareByHighestStreamsCountTotal(other);
         }
 
-        return compareLanguage;    // replace by proper result
+        return compareLanguage;
     }
 
 
