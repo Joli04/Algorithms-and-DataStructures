@@ -18,7 +18,6 @@ public class Party {
 
     private final int id;
     private final String name;
-
     /**
      * tracks the candidates of this party
      * Candidates have a unique (full) name within the party.
@@ -31,7 +30,7 @@ public class Party {
         this.name = name;
 
         // TODO initialise this.candidates with an appropriate Set implementation
-
+        candidates = new HashSet<>();
 
     }
 

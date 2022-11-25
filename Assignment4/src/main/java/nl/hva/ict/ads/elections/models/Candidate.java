@@ -23,6 +23,7 @@ public class Candidate {
         this.lastNamePrefix = lastNamePrefix;
         this.lastName = lastName;
     }
+
     public Candidate(String firstName, String lastNamePrefix, String lastName, Party party) {
         this(firstName, lastNamePrefix, lastName);
         this.setParty(party);
@@ -32,6 +33,7 @@ public class Candidate {
      * Composes the full name of a candidate from its optional name components
      * Every candidate shall have at least a valid last name
      * Other name components could be null
+     *
      * @param firstName
      * @param lastNamePrefix
      * @param lastName
@@ -39,14 +41,23 @@ public class Candidate {
      */
     public static String fullName(String firstName, String lastNamePrefix, String lastName) {
         // every candidate shall have a last name
-        String fullName = lastName;
+//        String fullName = lastName;
 
+        // Used StringBuilder instead of String for better performance.
+        StringBuilder fullName = new StringBuilder();
         // TODO prepend optional lastNamePrefix and optional firstName
         //  to compose a unique and nicely formatted full name
+        if (!firstName.isEmpty()) {
+            fullName.append(firstName);
+        }
 
+        if (!lastNamePrefix.isEmpty()) {
+            fullName.append(lastNamePrefix);
+        }
 
+        fullName.append(lastName);
 
-        return fullName;
+        return fullName.toString();
     }
 
     public String getFullName() {
@@ -67,6 +78,11 @@ public class Candidate {
         if (!(o instanceof Candidate)) return false;
         Candidate other = (Candidate) o;
 
+        if (o.hashCode() == this.hashCode() && getFullName().equals(other.getFullName())) {
+            return true;
+        }
+
+
         // TODO provide the equality criterion to identify unique candidate instances
         //  hint: every candidate shall have a unique full name within his/her party.
 
@@ -77,9 +93,7 @@ public class Candidate {
     @Override
     public int hashCode() {
         // TODO provide a hashCode that is consistent with above equality criterion
-
-
-        return 0; // replace by a proper outcome
+        return getFullName().hashCode(); // replace by a proper outcome
     }
 
     public String getFirstName() {
@@ -106,6 +120,7 @@ public class Candidate {
     private static final String FIRST_NAME = "FirstName";
     private static final String LAST_NAME_PREFIX = "NamePrefix";
     private static final String LAST_NAME = "LastName";
+
     /**
      * Auxiliary method for parsing the data from the EML files
      * This method can be used as-is and does not require your investigation or extension.
