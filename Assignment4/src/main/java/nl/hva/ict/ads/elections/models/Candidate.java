@@ -51,7 +51,7 @@ public class Candidate {
             fullName.append(firstName);
         }
 
-        if (!lastNamePrefix.isEmpty()) {
+        if (lastNamePrefix != null) {
             fullName.append(lastNamePrefix);
         }
 

@@ -8,8 +8,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Holds all election data per consituency
@@ -28,6 +26,8 @@ public class Election {
 
     public Election(String name) {
         this.name = name;
+        this.parties = new HashMap<>();
+        this.constituencies = new HashSet<>();
 
         // TODO initialise this.parties and this.constituencies with an appropriate Map implementations
 
@@ -44,7 +44,7 @@ public class Election {
         //  hint: there is no need to build a new collection; just return what you have got...
 
 
-        return null; // replace by a proper outcome
+        return parties.values(); // replace by a proper outcome
     }
 
     /**
@@ -56,7 +56,7 @@ public class Election {
         // TODO find the party with the given Id
 
 
-        return null; // replace by a proper outcome
+        return parties.get(Id); // replace by a proper outcome
     }
 
     public Set<? extends Constituency> getConstituencies() {
@@ -82,9 +82,15 @@ public class Election {
      */
     public Map<Constituency,Integer> numberOfRegistrationsByConstituency(Party party) {
         // TODO build a map with the number of candidate registrations per constituency
+        Map<Constituency, Integer> registrationsByConstituency = new HashMap<>();
+        Object[] consti = constituencies.toArray();
+
+        for (Object constituency : consti){
+            registrationsByConstituency.put((Constituency) constituency, party.getCandidates().size());
+        }
 
 
-        return null; // replace by a proper outcome
+        return registrationsByConstituency; // replace by a proper outcome
     }
 
     /**
@@ -111,8 +117,6 @@ public class Election {
      */
     public Collection<PollingStation> getPollingStationsByZipCodeRange(String firstZipCode, String lastZipCode) {
         // TODO retrieve all polling stations within the area of the given range of zip codes (inclusively)
-
-
         return null; // replace by a proper outcome
     }
 
@@ -122,7 +126,6 @@ public class Election {
      */
     public Map<Party, Integer> getVotesByParty() {
         // TODO calculate the total number of votes per party
-
 
         return null; // replace by a proper outcome
     }
@@ -151,7 +154,6 @@ public class Election {
      */
     public static List<Map.Entry<Party,Double>> sortedElectionResultsByPartyPercentage(int tops, Map<Party, Integer> votesCounts) {
         // TODO transform the voteCounts input into a sorted list of entries holding votes percentage by party
-
 
         return null; // replace by a proper outcome
     }

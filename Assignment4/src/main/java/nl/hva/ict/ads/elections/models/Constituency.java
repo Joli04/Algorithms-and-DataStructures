@@ -37,7 +37,8 @@ public class Constituency {
     public Constituency(int id, String name) {
         this.id = id;
         this.name = name;
-
+        this.rankedCandidatesByParty = new HashMap<>();
+        this.pollingStations = new TreeSet<>();
         // TODO initialise this.rankedCandidatesByParty with an appropriate Map implementation
         //  and this.pollingStations with an appropriate Set implementation organised by zipCode and Id
 

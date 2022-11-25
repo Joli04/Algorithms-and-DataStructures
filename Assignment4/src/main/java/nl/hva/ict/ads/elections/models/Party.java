@@ -40,9 +40,10 @@ public class Party {
      * then this duplicate instance shall be retrieved from the set and returned for further use
      * thereby avoiding the memory footprint of continued use of all duplicate instances of candidates
      * as they are imported from XML
+     *
      * @param newCandidate
-     * @return  the existing duplicate instance of newCandidate if available,
-     *              or otherwise the newCandidate itself
+     * @return the existing duplicate instance of newCandidate if available,
+     * or otherwise the newCandidate itself
      */
     public Candidate addOrGetCandidate(Candidate newCandidate) {
 
@@ -52,10 +53,19 @@ public class Party {
         // TODO try to add the newCandidate to the set of candidates,
         //  and if that fails then return the existing duplicate instance that is in the set already.
 
+        if (candidates.contains(newCandidate)) {
+            Object[] candidatesArray = candidates.toArray();
 
+            for (Object candidate : candidatesArray) {
+                if (candidate.equals(newCandidate)) {
+                    return (Candidate) candidate;
+                }
+            }
 
-
-        return null; // replace by a proper outcome
+        } else {
+            candidates.add(newCandidate);
+        }
+        return newCandidate; // replace by a proper outcome
     }
 
     @Override
@@ -75,14 +85,12 @@ public class Party {
         // TODO provide the equality criterion to identify unique party instances
 
 
-
         return false; // replace by a proper outcome
     }
 
     @Override
     public int hashCode() {
         // TODO provide a hashCode that is consistent with above equality criterion
-
 
 
         return 0; // replace by a proper outcome
@@ -105,11 +113,12 @@ public class Party {
     public static final String ID = "Id";
     private static final String REGISTERED_NAME = "RegisteredName";
     public static final String INVALID_NAME = "INVALID";
+
     /**
      * Auxiliary method for parsing the data from the EML files
      * This methode can be used as-is and does not require your investigation or extension.
      */
-    public static Party importFromXML(XMLParser parser, Constituency constituency, Map<Integer,Party> parties) throws XMLStreamException {
+    public static Party importFromXML(XMLParser parser, Constituency constituency, Map<Integer, Party> parties) throws XMLStreamException {
         if (parser.findBeginTag(PARTY)) {
             int id = 0;
             String name = INVALID_NAME;
