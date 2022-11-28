@@ -47,12 +47,12 @@ public class Candidate {
         StringBuilder fullName = new StringBuilder();
         // TODO prepend optional lastNamePrefix and optional firstName
         //  to compose a unique and nicely formatted full name
-        if (!firstName.isEmpty()) {
-            fullName.append(firstName);
+        if (firstName != null) {
+            fullName.append(firstName+" ");
         }
 
         if (lastNamePrefix != null) {
-            fullName.append(lastNamePrefix);
+            fullName.append(lastNamePrefix+" ");
         }
 
         fullName.append(lastName);
