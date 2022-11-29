@@ -78,10 +78,14 @@ public class Candidate {
         if (!(o instanceof Candidate)) return false;
         Candidate other = (Candidate) o;
 
-        if (o.hashCode() == this.hashCode() && getFullName().equals(other.getFullName())) {
+        // first check hashCode are the same
+        // second check fullName are the same
+        // third check party is the same
+        if (o.hashCode() == this.hashCode() &&
+                getFullName().equals(other.getFullName()) &&
+                party.equals(((Candidate) o).party)) {
             return true;
         }
-
 
         // TODO provide the equality criterion to identify unique candidate instances
         //  hint: every candidate shall have a unique full name within his/her party.

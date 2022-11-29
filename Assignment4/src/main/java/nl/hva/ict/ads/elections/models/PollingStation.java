@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A polling station counts the number of votes cast at the polling station for each candidate in the constituency
@@ -21,7 +22,7 @@ public class PollingStation {
     private final String name;
 
     /**
-     *  Provides for each candidate participating in the elections of the constituency the number of casted votes
+     * Provides for each candidate participating in the elections of the constituency the number of casted votes
      */
     private Map<Candidate, Integer> votesByCandidate;     // counts the votes per candidate
 
@@ -34,19 +35,19 @@ public class PollingStation {
         // TODO initialise this.votesByCandidate with an appropriate Map implementation
 
 
-
     }
 
     /**
      * Adds the given number of votes for the candidate in the votes count of this polling station
+     *
      * @param candidate
      * @param numberOfVotes
      */
     public void addVotes(Candidate candidate, int numberOfVotes) {
-        votesByCandidate.put(candidate,numberOfVotes);
+        // key, value, remapping
+        votesByCandidate.merge(candidate, numberOfVotes, Integer::sum);
         // TODO add the number of votes for the candidate
         //   hint: the best quality solution used one line of code...
-
 
 
     }
@@ -57,24 +58,41 @@ public class PollingStation {
 
     /**
      * Accumulates all votes on candidates into a total vote count per party in the polling station
+     *
      * @return the total number of votes in this polling station per party.
      */
     public Map<Party, Integer> getVotesByParty() {
+        Map<Party, Integer> votesByParty = new HashMap<>();
 
-        // TODO accumulate the votes per candidate into a map of total vote counts by party
+
+//        Stream combined = Stream.concat(votesByParty.entrySet().stream(), votesByCandidate.entrySet().stream());
+//        int total = 0;
+//        for (int votes : votesByCandidate.values()) {
+//            if()
+//        }
+
+        votesByCandidate.forEach((candidate, integer) -> {
+
+        });
+
+        System.out.println("TEST: "+votesByCandidate);
 
 
-        return null; // replace by a proper outcome
+            // TODO accumulate the votes per candidate into a map of total vote counts by party
+
+
+            return votesByParty; // replace by a proper outcome
     }
 
     /**
      * migrate votes from one polling station into another
      * this method is used for data cleansing when duplicate entries of polling stations are found in the data file.
+     *
      * @param target
      */
     public void combineVotesWith(PollingStation target) {
         // merge the votes of this polling station into the target
-        this.getVotesByCandidate().entrySet().forEach(e -> target.addVotes(e.getKey(),e.getValue()));
+        this.getVotesByCandidate().entrySet().forEach(e -> target.addVotes(e.getKey(), e.getValue()));
         System.out.printf("\nHave combined votes of %s into %s ", this, target);
         this.getVotesByCandidate().clear();
     }
@@ -124,25 +142,26 @@ public class PollingStation {
     public static final String POLLING_STATION_VOTES = "ReportingUnitVotes";
     public static final String VALID_VOTES = "ValidVotes";
     public static final String NO_ZIPCODE = "";
+
     /**
      * Auxiliary method for parsing the data from the EML files
      * This method can be used as-is and does not require your investigation or extension.
      */
-    public static PollingStation importFromXml(XMLParser parser, Constituency constituency, Map<Integer,Party> parties) throws XMLStreamException {
+    public static PollingStation importFromXml(XMLParser parser, Constituency constituency, Map<Integer, Party> parties) throws XMLStreamException {
         if (parser.findBeginTag(POLLING_STATION_VOTES)) {
             String id = null;
             String name = null;
             String zipCode = NO_ZIPCODE;
             if (parser.findBeginTag(POLLING_STATION_IDENTIFIER)) {
                 id = parser.getAttributeValue(null, ID);
-                name = parser.getElementText().replace("Stembureau Stembureau","Stembureau");
+                name = parser.getElementText().replace("Stembureau Stembureau", "Stembureau");
                 parser.findAndAcceptEndTag(POLLING_STATION_IDENTIFIER);
                 int postCodeIndex = name.indexOf("(postcode:");
                 if (postCodeIndex >= 0) {
                     int postCodeEndIndex = name.indexOf(')', postCodeIndex);
                     if (postCodeEndIndex > postCodeIndex) {
-                        zipCode = name.substring(postCodeIndex+10, postCodeEndIndex).replace(" ","").toUpperCase();
-                        name = name.substring(0,postCodeIndex).trim() + name.substring(postCodeEndIndex+1).trim();
+                        zipCode = name.substring(postCodeIndex + 10, postCodeEndIndex).replace(" ", "").toUpperCase();
+                        name = name.substring(0, postCodeIndex).trim() + name.substring(postCodeEndIndex + 1).trim();
                     }
                 }
                 if (name.toLowerCase().contains("postcode")) {
