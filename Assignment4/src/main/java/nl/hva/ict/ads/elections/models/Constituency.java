@@ -5,7 +5,6 @@ import nl.hva.ict.ads.utils.xml.XMLParser;
 import javax.xml.stream.XMLStreamException;
 import java.util.*;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * A Constituency (kieskring) is a regional district (of multiple cities and villages).
@@ -28,7 +27,7 @@ public class Constituency {
     private final String name;
 
     // All candidates that have been registered at this constituency organised by party and rank
-    private Map<Party,NavigableMap<Integer,Candidate>> rankedCandidatesByParty;
+    private Map<Integer, Candidate> rankedCandidatesByParty;
 
     // The polling stations in this constituency organised by zipCode and id
     // such that Navigable Subsets of polling stations within a range of zipcodes can be retrieved efficiently.
@@ -37,7 +36,7 @@ public class Constituency {
     public Constituency(int id, String name) {
         this.id = id;
         this.name = name;
-        this.rankedCandidatesByParty = new HashMap<>();
+        this.rankedCandidatesByParty = new TreeMap<Integer, Candidate>();
         this.pollingStations = new TreeSet<>();
         // TODO initialise this.rankedCandidatesByParty with an appropriate Map implementation
         //  and this.pollingStations with an appropriate Set implementation organised by zipCode and Id
@@ -84,9 +83,8 @@ public class Constituency {
      */
     public Candidate getCandidate(Party party, int rank) {
         // TODO: return the candidate at the given rank in the given party
-
-
-        return null;    // replace by a proper outcome
+        Candidate candidate = rankedCandidatesByParty.get(rank);
+        return party.addOrGetCandidate(candidate);  // replace by a proper outcome
     }
 
     /**
@@ -111,6 +109,7 @@ public class Constituency {
     public Set<Candidate> getAllCandidates() {
         // TODO collect all candidates of all parties of this Constituency into a Set.
         //  hint: flatMap may help...
+
 
 
         return null;    // replace by a proper outcome
@@ -188,7 +187,7 @@ public class Constituency {
         return name;
     }
 
-    protected Map<Party, NavigableMap<Integer, Candidate>> getRankedCandidatesByParty() {
+    protected Map<Integer, Candidate> getRankedCandidatesByParty() {
         return this.rankedCandidatesByParty;
     }
 

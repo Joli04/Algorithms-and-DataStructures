@@ -4,6 +4,7 @@ import nl.hva.ict.ads.utils.xml.XMLParser;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -63,19 +64,10 @@ public class PollingStation {
      */
     public Map<Party, Integer> getVotesByParty() {
         Map<Party, Integer> votesByParty = new HashMap<>();
-
-
-//        Stream combined = Stream.concat(votesByParty.entrySet().stream(), votesByCandidate.entrySet().stream());
-//        int total = 0;
-//        for (int votes : votesByCandidate.values()) {
-//            if()
-//        }
-
         votesByCandidate.forEach((candidate, integer) -> {
+            votesByParty.merge(candidate.getParty(),integer, Integer::sum);
 
         });
-
-        System.out.println("TEST: "+votesByCandidate);
 
 
             // TODO accumulate the votes per candidate into a map of total vote counts by party
