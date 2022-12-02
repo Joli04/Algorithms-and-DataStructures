@@ -47,6 +47,7 @@ public class Party {
      */
     public Candidate addOrGetCandidate(Candidate newCandidate) {
 
+
         // associate the new Candidate with this party
         newCandidate.setParty(this);
 

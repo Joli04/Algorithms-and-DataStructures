@@ -36,8 +36,9 @@ public class Constituency {
     public Constituency(int id, String name) {
         this.id = id;
         this.name = name;
-        this.rankedCandidatesByParty = new TreeMap<Integer, Candidate>();
-        this.pollingStations = new TreeSet<>();
+        this.rankedCandidatesByParty = new TreeMap<>();
+        this.pollingStations = new TreeSet<>(Comparator.comparing(PollingStation::getZipCode)
+                .thenComparing(PollingStation::getId));
         // TODO initialise this.rankedCandidatesByParty with an appropriate Map implementation
         //  and this.pollingStations with an appropriate Set implementation organised by zipCode and Id
 
@@ -50,26 +51,34 @@ public class Constituency {
      * If the rank is already taken by another Candidate, this registration shall fail and return false.
      * If the given candidate has been registered already at another rank, this registration shall also fail and return false
      * Used by XML import
+     *
      * @param candidate
      * @return whether the registration has succeeded
      */
     public boolean register(int rank, Candidate candidate) {
         // TODO  register the candidate in this constituency for his/her party at the given rank (ballot position)
         //  hint: try to use computeIfAbsent to efficiently create and insert an empty ballot map into rankedCandidatesByParty only when required
-
-
-
+        if (rankedCandidatesByParty.containsKey(rank)) {
+            return false;
+        }
+//        rankedCandidatesByParty.computeIfAbsent(candidate.getParty().getId(), f -> candidate.getParty().addOrGetCandidate(candidate));
+        rankedCandidatesByParty.computeIfAbsent(rank, f -> candidate.getParty().addOrGetCandidate(candidate));
         return false;    // replace by a proper outcome
     }
 
+
     /**
      * retrieves the collection of parties that have registered one or more candidates at this constituency
+     *
      * @return
      */
     public Collection<Party> getParties() {
         // TODO: return all parties that have been registered at this constituency
         //  hint: there is no need to build a new collection; just return what you have got...
 
+        // counts the distinct values
+        // iets dergelijks kan je gebruiken voor het aantal parties te checken
+        System.out.println("Distinct: " + rankedCandidatesByParty.values().stream().distinct().count());
 
 
         return null;    // replace by a proper outcome
@@ -77,18 +86,23 @@ public class Constituency {
 
     /**
      * retrieves a candidate from the ballot list of given party and at given rank
+     *
      * @param party
      * @param rank
      * @return
      */
     public Candidate getCandidate(Party party, int rank) {
         // TODO: return the candidate at the given rank in the given party
+
+        System.out.println(rankedCandidatesByParty);
         Candidate candidate = rankedCandidatesByParty.get(rank);
+        System.out.println("TEST " + candidate);
         return party.addOrGetCandidate(candidate);  // replace by a proper outcome
     }
 
     /**
      * retrieve a list of all registered candidates for a given party in order of their rank
+     *
      * @param party
      * @return
      */
@@ -104,12 +118,12 @@ public class Constituency {
     /**
      * finds all candidates who are electable in this Constituency
      * (via the list of candidates of a party that has been registered).
+     *
      * @return the set of all candidates in this Constituency.
      */
     public Set<Candidate> getAllCandidates() {
         // TODO collect all candidates of all parties of this Constituency into a Set.
         //  hint: flatMap may help...
-
 
 
         return null;    // replace by a proper outcome
@@ -119,9 +133,10 @@ public class Constituency {
      * Retrieve the sub set of polling stations that are located within the area of the specified zip codes
      * i.e. firstZipCode <= pollingStation.zipCode <= lastZipCode
      * All valid zip codes adhere to the pattern 'nnnnXX' with 1000 <= nnnn <= 9999 and 'AA' <= XX <= 'ZZ'
+     *
      * @param firstZipCode
      * @param lastZipCode
-     * @return      the sub set of polling stations within the specified zipCode range
+     * @return the sub set of polling stations within the specified zipCode range
      */
     public NavigableSet<PollingStation> getPollingStationsByZipCodeRange(String firstZipCode, String lastZipCode) {
         // TODO: return all polling stations that have been registered at this constituency
@@ -134,9 +149,10 @@ public class Constituency {
     /**
      * Provides a map of total number of votes per party in this constituency
      * accumulated across all polling stations and all candidates
+     *
      * @return
      */
-    public Map<Party,Integer> getVotesByParty() {
+    public Map<Party, Integer> getVotesByParty() {
         // TODO prepare a map of total number of votes per party
 
 
@@ -145,6 +161,7 @@ public class Constituency {
 
     /**
      * adds a polling station to this constituency
+     *
      * @param pollingStation
      */
     public boolean add(PollingStation pollingStation) {
@@ -154,7 +171,7 @@ public class Constituency {
 
             // and merge the votes of the duplicate into the existing original
             pollingStation.combineVotesWith(existing);
-        };
+        }
         return true;
     }
 
@@ -201,11 +218,12 @@ public class Constituency {
     public static final String ID = "Id";
     protected static final String CONSTITUENCY_NAME = "ContestName";
     public static final String INVALID_NAME = "INVALID";
+
     /**
      * Auxiliary method for parsing the data from the EML files
      * This method can be used as-is and does not require your investigation or extension.
      */
-    public static Constituency importFromXML(XMLParser parser, Map<Integer,Party> parties) throws XMLStreamException {
+    public static Constituency importFromXML(XMLParser parser, Map<Integer, Party> parties) throws XMLStreamException {
         if (parser.findBeginTag(CONSTITUENCY)) {
 
             int id = 0;

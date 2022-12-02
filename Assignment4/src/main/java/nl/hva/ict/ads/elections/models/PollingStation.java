@@ -68,11 +68,7 @@ public class PollingStation {
             votesByParty.merge(candidate.getParty(),integer, Integer::sum);
 
         });
-
-
             // TODO accumulate the votes per candidate into a map of total vote counts by party
-
-
             return votesByParty; // replace by a proper outcome
     }
 
