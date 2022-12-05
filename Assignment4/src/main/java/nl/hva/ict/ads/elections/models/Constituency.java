@@ -4,7 +4,9 @@ import nl.hva.ict.ads.utils.xml.XMLParser;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * A Constituency (kieskring) is a regional district (of multiple cities and villages).
@@ -61,8 +63,8 @@ public class Constituency {
         if (rankedCandidatesByParty.containsKey(rank)) {
             return false;
         }
-//        rankedCandidatesByParty.computeIfAbsent(candidate.getParty().getId(), f -> candidate.getParty().addOrGetCandidate(candidate));
-        rankedCandidatesByParty.computeIfAbsent(rank, f -> candidate.getParty().addOrGetCandidate(candidate));
+        rankedCandidatesByParty.computeIfAbsent(candidate.getParty().getId(), f -> candidate.getParty().addOrGetCandidate(candidate));
+//        rankedCandidatesByParty.computeIfAbsent(rank, f -> candidate.getParty().addOrGetCandidate(candidate));
         return false;    // replace by a proper outcome
     }
 
@@ -78,10 +80,17 @@ public class Constituency {
 
         // counts the distinct values
         // iets dergelijks kan je gebruiken voor het aantal parties te checken
-        System.out.println("Distinct: " + rankedCandidatesByParty.values().stream().distinct().count());
+//        System.out.println("Distinct: " + rankedCandidatesByParty.values().stream().distinct().count());
+//        System.out.println("Distinct: " + rankedCandidatesByParty.values().stream().distinct()
+//                .collect(Collectors.toMap(Candidate::getParty, Function.identity())));
+//        System.out.println("Distinct: " + rankedCandidatesByParty.entrySet().stream().filter(entry ->));
+        Collection<Party> parties = new HashSet<>();
+        for(Candidate entry : rankedCandidatesByParty.values()){
+            parties.add(entry.getParty());
+        }
 
 
-        return null;    // replace by a proper outcome
+        return parties;   // replace by a proper outcome
     }
 
     /**
