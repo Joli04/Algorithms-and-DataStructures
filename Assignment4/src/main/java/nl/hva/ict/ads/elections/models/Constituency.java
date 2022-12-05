@@ -60,7 +60,7 @@ public class Constituency {
     public boolean register(int rank, Candidate candidate) {
         // TODO  register the candidate in this constituency for his/her party at the given rank (ballot position)
         //  hint: try to use computeIfAbsent to efficiently create and insert an empty ballot map into rankedCandidatesByParty only when required
-        if (rankedCandidatesByParty.containsKey(rank)) {
+        if (rankedCandidatesByParty.containsKey(rank) || rankedCandidatesByParty.containsValue(candidate)) {
             return false;
         }
         rankedCandidatesByParty.computeIfAbsent(candidate.getParty().getId(), f -> candidate.getParty().addOrGetCandidate(candidate));
@@ -103,10 +103,19 @@ public class Constituency {
     public Candidate getCandidate(Party party, int rank) {
         // TODO: return the candidate at the given rank in the given party
 
-        System.out.println(rankedCandidatesByParty);
-        Candidate candidate = rankedCandidatesByParty.get(rank);
+        System.out.println("TESTING: " + rankedCandidatesByParty);
+//        for (Map.Entry<Integer, Candidate> entry : rankedCandidatesByParty.entrySet()) {
+//            System.out.println("dasdsadasdas: " + entry.getValue());
+//            return entry.getValue();
+//            // do something with key and/or tab
+//        }
+        Candidate candidate = rankedCandidatesByParty.get(party.getId());
+//        Candidate candidate = rankedCandidatesByParty.get(rank);
+        System.out.println(rankedCandidatesByParty.get(party.getId()));
         System.out.println("TEST " + candidate);
-        return party.addOrGetCandidate(candidate);  // replace by a proper outcome
+//        return party.addOrGetCandidate(candidate);  // replace by a proper outcome
+//        return party.addOrGetCandidate(candidate);
+        return candidate;
     }
 
     /**
