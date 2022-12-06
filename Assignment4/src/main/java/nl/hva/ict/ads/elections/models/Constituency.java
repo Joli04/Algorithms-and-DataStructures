@@ -58,14 +58,40 @@ public class Constituency {
      * @return whether the registration has succeeded
      */
     public boolean register(int rank, Candidate candidate) {
+
         // TODO  register the candidate in this constituency for his/her party at the given rank (ballot position)
         //  hint: try to use computeIfAbsent to efficiently create and insert an empty ballot map into rankedCandidatesByParty only when required
-        if (rankedCandidatesByParty.containsKey(rank) || rankedCandidatesByParty.containsValue(candidate)) {
-            return false;
+
+
+//        if(getParties().contains(candidate)){
+
+//        if (rankedCandidatesByParty.containsKey(rank)) {
+//            return false;
+//        }
+////        }
+
+
+        rankedCandidatesByParty.computeIfAbsent(rank, f -> candidate.getParty().addOrGetCandidate(candidate));
+        if (rankedCandidatesByParty.containsValue(candidate) && !rankedCandidatesByParty.containsKey(rank)) {
+
         }
         rankedCandidatesByParty.computeIfAbsent(candidate.getParty().getId(), f -> candidate.getParty().addOrGetCandidate(candidate));
-//        rankedCandidatesByParty.computeIfAbsent(rank, f -> candidate.getParty().addOrGetCandidate(candidate));
-        return false;    // replace by a proper outcome
+//        rankedCandidatesByParty.put(rank, candidate);
+        System.out.println(rankedCandidatesByParty.values());
+
+//        if (!rankedCandidatesByParty.containsValue(candidate) || !rankedCandidatesByParty.containsKey(rank)) {
+//            rankedCandidatesByParty.computeIfAbsent(candidate.getParty().getId(), f -> candidate.getParty().addOrGetCandidate(candidate));
+//            rankedCandidatesByParty.computeIfAbsent(rank, f -> candidate.getParty().addOrGetCandidate(candidate));
+//        } else {
+//            return false;
+//        }
+//        if (!rankedCandidatesByParty.containsKey(rank)) {
+//
+//        }
+
+
+//        return true;    // replace by a proper outcome
+        return false;
     }
 
 
@@ -85,10 +111,9 @@ public class Constituency {
 //                .collect(Collectors.toMap(Candidate::getParty, Function.identity())));
 //        System.out.println("Distinct: " + rankedCandidatesByParty.entrySet().stream().filter(entry ->));
         Collection<Party> parties = new HashSet<>();
-        for(Candidate entry : rankedCandidatesByParty.values()){
+        for (Candidate entry : rankedCandidatesByParty.values()) {
             parties.add(entry.getParty());
         }
-
 
         return parties;   // replace by a proper outcome
     }
@@ -102,19 +127,28 @@ public class Constituency {
      */
     public Candidate getCandidate(Party party, int rank) {
         // TODO: return the candidate at the given rank in the given party
-
-        System.out.println("TESTING: " + rankedCandidatesByParty);
-//        for (Map.Entry<Integer, Candidate> entry : rankedCandidatesByParty.entrySet()) {
-//            System.out.println("dasdsadasdas: " + entry.getValue());
-//            return entry.getValue();
-//            // do something with key and/or tab
+//        Set<Map.Entry<Integer, Candidate>> entrySet
+//                = rankedCandidatesByParty.entrySet();
+//        Map.Entry<Integer, Candidate>[] entryArray
+//                = entrySet.toArray(new Map.Entry[entrySet.size()]);
+//
+//        for (int i = 0; i < rankedCandidatesByParty.size(); i++) {
+//            // Get Key using index and print
+//            System.out.println("Key at " + i + ":"
+//                    + entryArray[i].getKey());
+//
+//            // Get value using index and print
+//            System.out.println("Value at " + i + ":"
+//                    + entryArray[i].getValue());
 //        }
-        Candidate candidate = rankedCandidatesByParty.get(party.getId());
-//        Candidate candidate = rankedCandidatesByParty.get(rank);
-        System.out.println(rankedCandidatesByParty.get(party.getId()));
-        System.out.println("TEST " + candidate);
-//        return party.addOrGetCandidate(candidate);  // replace by a proper outcome
-//        return party.addOrGetCandidate(candidate);
+        for (Map.Entry<Integer, Candidate> entry : rankedCandidatesByParty.entrySet()) {
+            if (rankedCandidatesByParty.get(rank).equals(entry.getValue())) {
+                return entry.getValue();
+            }
+        }
+
+
+        Candidate candidate = rankedCandidatesByParty.get(rank);
         return candidate;
     }
 
