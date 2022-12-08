@@ -4,7 +4,6 @@ import nl.hva.ict.ads.utils.xml.XMLParser;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -29,7 +28,7 @@ public class Constituency {
     private final String name;
 
     // All candidates that have been registered at this constituency organised by party and rank
-    private Map<Integer, Candidate> rankedCandidatesByParty;
+    private Map<Party, NavigableMap<Integer, Candidate>>rankedCandidatesByParty;
 
     // The polling stations in this constituency organised by zipCode and id
     // such that Navigable Subsets of polling stations within a range of zipcodes can be retrieved efficiently.
@@ -38,7 +37,7 @@ public class Constituency {
     public Constituency(int id, String name) {
         this.id = id;
         this.name = name;
-        this.rankedCandidatesByParty = new TreeMap<>();
+        this.rankedCandidatesByParty = new TreeMap<>(Comparator.comparing(Party::getName));
         this.pollingStations = new TreeSet<>(Comparator.comparing(PollingStation::getZipCode)
                 .thenComparing(PollingStation::getId));
         // TODO initialise this.rankedCandidatesByParty with an appropriate Map implementation
@@ -62,14 +61,14 @@ public class Constituency {
         // TODO  register the candidate in this constituency for his/her party at the given rank (ballot position)
         //  hint: try to use computeIfAbsent to efficiently create and insert an empty ballot map into rankedCandidatesByParty only when required
 
+        NavigableMap<Integer, Candidate> test = rankedCandidatesByParty.computeIfAbsent(candidate.getParty(), party -> new TreeMap<>());
 
-//        if(getParties().contains(candidate)){
-        rankedCandidatesByParty.computeIfAbsent(rank, f -> candidate.getParty().addOrGetCandidate(candidate));
-        if (rankedCandidatesByParty.get(rank).equals(candidate)){
+        if(test.containsKey(rank) || test.containsValue(candidate)){
             return false;
         }
-        rankedCandidatesByParty.computeIfAbsent(candidate.getParty().getId(), f -> candidate.getParty().addOrGetCandidate(candidate));
-        System.out.println(rankedCandidatesByParty.values());
+
+        test.put(rank, candidate);
+        return true;
 
 
 //        rankedCandidatesByParty.computeIfAbsent(rank, f -> candidate.getParty().addOrGetCandidate(candidate));
@@ -92,7 +91,6 @@ public class Constituency {
 
 
 //        return true;    // replace by a proper outcome
-        return false;
     }
 
 
@@ -112,10 +110,6 @@ public class Constituency {
 //                .collect(Collectors.toMap(Candidate::getParty, Function.identity())));
 //        System.out.println("Distinct: " + rankedCandidatesByParty.entrySet().stream().filter(entry ->));
         Collection<Party> parties = new HashSet<>();
-        for (Candidate entry : rankedCandidatesByParty.values()) {
-            parties.add(entry.getParty());
-        }
-
         return parties;   // replace by a proper outcome
     }
 
@@ -128,29 +122,7 @@ public class Constituency {
      */
     public Candidate getCandidate(Party party, int rank) {
         // TODO: return the candidate at the given rank in the given party
-//        Set<Map.Entry<Integer, Candidate>> entrySet
-//                = rankedCandidatesByParty.entrySet();
-//        Map.Entry<Integer, Candidate>[] entryArray
-//                = entrySet.toArray(new Map.Entry[entrySet.size()]);
-//
-//        for (int i = 0; i < rankedCandidatesByParty.size(); i++) {
-//            // Get Key using index and print
-//            System.out.println("Key at " + i + ":"
-//                    + entryArray[i].getKey());
-//
-//            // Get value using index and print
-//            System.out.println("Value at " + i + ":"
-//                    + entryArray[i].getValue());
-//        }
-        for (Map.Entry<Integer, Candidate> entry : rankedCandidatesByParty.entrySet()) {
-            if (rankedCandidatesByParty.get(rank).equals(entry.getValue())){
-                return entry.getValue();
-            }
-        }
-
-
-        Candidate candidate = rankedCandidatesByParty.get(rank);
-        return null;
+        return rankedCandidatesByParty.get(party).get(rank);
     }
 
     /**
@@ -163,9 +135,9 @@ public class Constituency {
         // TODO: return a list with all registered candidates of a given party in order of their rank
         //  hint: if the implementation classes of rankedCandidatesByParty are well chosen, this only takes one line of code
         //  hint: the resulting list may be immutable at your choice of implementation.
-
-
-        return rankedCandidatesByParty.values().stream().filter(candidate -> candidate.getParty() == party).collect(Collectors.toList()); // replace by a proper outcome
+//        return rankedCandidatesByParty.values().stream().filter();
+        return null;
+//        return rankedCandidatesByParty.values().stream().filter(candidate -> candidate.getParty() == party).collect(Collectors.toList()); // replace by a proper outcome
     }
 
     /**
@@ -178,9 +150,10 @@ public class Constituency {
         // TODO collect all candidates of all parties of this Constituency into a Set.
         //  hint: flatMap may help...;
 
-        return rankedCandidatesByParty.values().stream()
-                .flatMap(x -> x.getParty().getCandidates().stream())
-                .collect(Collectors.toSet());    // replace by a proper outcome
+        return rankedCandidatesByParty.values().stream().flatMap(x->x.values().stream()).collect(Collectors.toSet());
+//        return rankedCandidatesByParty.values().stream()
+//                .flatMap(x -> x.getParty().getCandidates().stream())
+//                .collect(Collectors.toSet());    // replace by a proper outcome
     }
 
     /**
@@ -196,7 +169,6 @@ public class Constituency {
         // TODO: return all polling stations that have been registered at this constituency
         //  hint: there is no need to build a new collection; just return what you have got...
 
-
         return null; // replace by a proper outcome
     }
 
@@ -208,8 +180,6 @@ public class Constituency {
      */
     public Map<Party, Integer> getVotesByParty() {
         // TODO prepare a map of total number of votes per party
-
-
         return null; // replace by a proper outcome
     }
 
@@ -258,7 +228,7 @@ public class Constituency {
         return name;
     }
 
-    protected Map<Integer, Candidate> getRankedCandidatesByParty() {
+    protected Map<Party, NavigableMap<Integer, Candidate>> getRankedCandidatesByParty() {
         return this.rankedCandidatesByParty;
     }
 
