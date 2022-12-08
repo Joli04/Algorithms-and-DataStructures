@@ -64,20 +64,21 @@ public class Constituency {
 
 
 //        if(getParties().contains(candidate)){
-
-//        if (rankedCandidatesByParty.containsKey(rank)) {
-//            return false;
-//        }
-////        }
-
-
         rankedCandidatesByParty.computeIfAbsent(rank, f -> candidate.getParty().addOrGetCandidate(candidate));
-        if (rankedCandidatesByParty.containsValue(candidate) && !rankedCandidatesByParty.containsKey(rank)) {
-
+        if (rankedCandidatesByParty.get(rank).equals(candidate)){
+            return false;
         }
         rankedCandidatesByParty.computeIfAbsent(candidate.getParty().getId(), f -> candidate.getParty().addOrGetCandidate(candidate));
-//        rankedCandidatesByParty.put(rank, candidate);
         System.out.println(rankedCandidatesByParty.values());
+
+
+//        rankedCandidatesByParty.computeIfAbsent(rank, f -> candidate.getParty().addOrGetCandidate(candidate));
+////        if (rankedCandidatesByParty.containsValue(candidate) && !rankedCandidatesByParty.containsKey(rank)) {
+////
+////        }
+//        rankedCandidatesByParty.computeIfAbsent(candidate.getParty().getId(), f -> candidate.getParty().addOrGetCandidate(candidate));
+////        rankedCandidatesByParty.put(rank, candidate);
+//        System.out.println(rankedCandidatesByParty.values());
 
 //        if (!rankedCandidatesByParty.containsValue(candidate) || !rankedCandidatesByParty.containsKey(rank)) {
 //            rankedCandidatesByParty.computeIfAbsent(candidate.getParty().getId(), f -> candidate.getParty().addOrGetCandidate(candidate));
@@ -142,14 +143,14 @@ public class Constituency {
 //                    + entryArray[i].getValue());
 //        }
         for (Map.Entry<Integer, Candidate> entry : rankedCandidatesByParty.entrySet()) {
-            if (rankedCandidatesByParty.get(rank).equals(entry.getValue())) {
+            if (rankedCandidatesByParty.get(rank).equals(entry.getValue())){
                 return entry.getValue();
             }
         }
 
 
         Candidate candidate = rankedCandidatesByParty.get(rank);
-        return candidate;
+        return null;
     }
 
     /**
@@ -164,7 +165,7 @@ public class Constituency {
         //  hint: the resulting list may be immutable at your choice of implementation.
 
 
-        return null; // replace by a proper outcome
+        return rankedCandidatesByParty.values().stream().filter(candidate -> candidate.getParty() == party).collect(Collectors.toList()); // replace by a proper outcome
     }
 
     /**
@@ -175,10 +176,11 @@ public class Constituency {
      */
     public Set<Candidate> getAllCandidates() {
         // TODO collect all candidates of all parties of this Constituency into a Set.
-        //  hint: flatMap may help...
+        //  hint: flatMap may help...;
 
-
-        return null;    // replace by a proper outcome
+        return rankedCandidatesByParty.values().stream()
+                .flatMap(x -> x.getParty().getCandidates().stream())
+                .collect(Collectors.toSet());    // replace by a proper outcome
     }
 
     /**

@@ -62,12 +62,14 @@ class ConstituencyTest {
     }
 
     @Test
-    void getCandidatesShouldReturnAllCandidatesOfAPartyInOrderOfRank() {
+    void getCandidatesShouldReturnAllCandidatesOfAPartyInOrderOfRank(){
+        System.out.println(this.constituency.getCandidates(this.studentsParty));
         assertEquals(this.teacherCandidates, this.constituency.getCandidates(this.teachersParty),
                 "Cannot retrieve the correct ballot list with the correct order of candidates");
         assertEquals(this.studentCandidates, this.constituency.getCandidates(this.studentsParty),
                 "Cannot retrieve the correct ballot list with the correct order of candidates");
     }
+
 
     @Test
     void getCandidateShouldReturnTheCorrectCandidateAtGivenPartyAndRank() {
