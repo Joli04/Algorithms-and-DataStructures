@@ -178,7 +178,11 @@ public class Constituency {
         // TODO: return all polling stations that have been registered at this constituency
         //  hint: there is no need to build a new collection; just return what you have got...
 
-       return null;
+        return pollingStations.subSet(
+                new PollingStation("0",firstZipCode,""), true,
+
+                new PollingStation("0",lastZipCode,""),true);
+
     }
 
     /**

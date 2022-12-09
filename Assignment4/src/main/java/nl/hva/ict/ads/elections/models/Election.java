@@ -125,6 +125,7 @@ public class Election {
      * @return
      */
     public Map<Party, Integer> getVotesByParty() {
+
         // TODO calculate the total number of votes per party
 
         return null; // replace by a proper outcome
@@ -153,6 +154,7 @@ public class Election {
      * @return  the sorted list of (party,votesPercentage) pairs with the highest percentage upfront
      */
     public static List<Map.Entry<Party,Double>> sortedElectionResultsByPartyPercentage(int tops, Map<Party, Integer> votesCounts) {
+
         // TODO transform the voteCounts input into a sorted list of entries holding votes percentage by party
 
         return null; // replace by a proper outcome
