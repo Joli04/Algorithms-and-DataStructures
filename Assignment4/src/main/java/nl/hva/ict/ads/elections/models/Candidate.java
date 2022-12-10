@@ -3,9 +3,6 @@ package nl.hva.ict.ads.elections.models;
 import nl.hva.ict.ads.utils.xml.XMLParser;
 
 import javax.xml.stream.XMLStreamException;
-import java.util.Objects;
-import java.util.Random;
-
 /**
  * An electable Candidate of a Party.
  * Every candidate shall have a unique (full) name within the party
@@ -45,15 +42,21 @@ public class Candidate {
 
         // Used StringBuilder instead of String for better performance.
         StringBuilder fullName = new StringBuilder();
-        // TODO prepend optional lastNamePrefix and optional firstName
-        //  to compose a unique and nicely formatted full name
+        // check if an firstname exist
+        // if so... append to the StringBuilder
+        // same for lastNamePrefix
+        // we can make the assumption that lastname will be valid(see description),
+        // so we don't have to validate
         if (firstName != null) {
-            fullName.append(firstName+" ");
+            fullName.append(firstName)
+                    .append(" ");
         }
 
         if (lastNamePrefix != null) {
-            fullName.append(lastNamePrefix+" ");
+            fullName.append(lastNamePrefix)
+                    .append(" ");
         }
+
 
         fullName.append(lastName);
 
@@ -87,17 +90,12 @@ public class Candidate {
             return true;
         }
 
-        // TODO provide the equality criterion to identify unique candidate instances
-        //  hint: every candidate shall have a unique full name within his/her party.
-
-
         return false; // replace by a proper outcome
     }
 
     @Override
     public int hashCode() {
-        // TODO provide a hashCode that is consistent with above equality criterion
-        return getFullName().hashCode(); // replace by a proper outcome
+        return getFullName().hashCode();
     }
 
     public String getFirstName() {

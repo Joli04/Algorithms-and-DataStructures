@@ -51,9 +51,9 @@ public class Party {
         // associate the new Candidate with this party
         newCandidate.setParty(this);
 
-        // TODO try to add the newCandidate to the set of candidates,
-        //  and if that fails then return the existing duplicate instance that is in the set already.
-
+        // check if the Set already contains the new candidate element
+        // if so... loop through set because we want to return the original element
+        // if this is not the case we, it means it does not exist in the Set just yet, so we add it and then return it
         if (candidates.contains(newCandidate)) {
             for (Candidate candidate : candidates) {
                 if (candidate.equals(newCandidate)) {
@@ -81,7 +81,7 @@ public class Party {
         Party other = (Party) o;
 
         // TODO provide the equality criterion to identify unique party instances
-        if(other.id == this.id && other.hashCode() == this.hashCode()){
+        if(other.hashCode() == this.hashCode() && other.id == this.id){
             return true;
         }
 

@@ -46,9 +46,8 @@ public class PollingStation {
      */
     public void addVotes(Candidate candidate, int numberOfVotes) {
         // key, value, remapping
+        // using the build in sum method to add up the number votes
         votesByCandidate.merge(candidate, numberOfVotes, Integer::sum);
-        // TODO add the number of votes for the candidate
-        //   hint: the best quality solution used one line of code...
 
 
     }
@@ -63,12 +62,13 @@ public class PollingStation {
      * @return the total number of votes in this polling station per party.
      */
     public Map<Party, Integer> getVotesByParty() {
+        //Initialize a new map
         Map<Party, Integer> votesByParty = new HashMap<>();
+        // loop through the existing map and merge the votes for each individual party
         votesByCandidate.forEach((candidate, integer) -> {
             votesByParty.merge(candidate.getParty(),integer, Integer::sum);
 
         });
-            // TODO accumulate the votes per candidate into a map of total vote counts by party
             return votesByParty; // replace by a proper outcome
     }
 
