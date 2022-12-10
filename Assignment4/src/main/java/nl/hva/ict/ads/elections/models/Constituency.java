@@ -179,10 +179,8 @@ public class Constituency {
         //  hint: there is no need to build a new collection; just return what you have got...
 
         return pollingStations.subSet(
-                new PollingStation("0",firstZipCode,""), true,
-
-                new PollingStation("0",lastZipCode,""),true);
-
+                new PollingStation("0", firstZipCode, ""), true,
+                new PollingStation("0", lastZipCode, ""), true);
     }
 
     /**
@@ -191,11 +189,11 @@ public class Constituency {
      *
      * @return
      */
-    public Map<Party,Integer> getVotesByParty() {
+    public Map<Party, Integer> getVotesByParty() {
         // TODO prepare a map of total number of votes per party
         Map<Party, Integer> votes = new HashMap<>();
-        for (PollingStation pollingStation: pollingStations) {
-            pollingStation.getVotesByParty().forEach((party, integer) -> votes.merge(party, integer ,Integer::sum));
+        for (PollingStation pollingStation : pollingStations) {
+            pollingStation.getVotesByParty().forEach((party, integer) -> votes.merge(party, integer, Integer::sum));
         }
         return votes;
     }

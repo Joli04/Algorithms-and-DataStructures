@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Holds all election data per consituency
@@ -71,8 +72,15 @@ public class Election {
     public List<Candidate> getAllCandidates() {
         // TODO find all candidates organised by increasing party-id
 
+        List<Candidate> candidates = new ArrayList<>();
+        NavigableSet<Party> partiesSortedOnId = new TreeSet<>(Comparator.comparing(Party::getId));
+        partiesSortedOnId.addAll(parties.values());
 
-        return null; // replace by a proper outcome
+        for (Party party : partiesSortedOnId){
+            candidates.addAll(party.getCandidates());
+        }
+        return candidates;
+
     }
 
     /**
@@ -83,14 +91,12 @@ public class Election {
     public Map<Constituency,Integer> numberOfRegistrationsByConstituency(Party party) {
         // TODO build a map with the number of candidate registrations per constituency
         Map<Constituency, Integer> registrationsByConstituency = new HashMap<>();
-        Object[] consti = constituencies.toArray();
 
-        for (Object constituency : consti){
-            registrationsByConstituency.put((Constituency) constituency, party.getCandidates().size());
+        for (Constituency constituency : constituencies){
+            registrationsByConstituency.put(constituency, constituency.getRankedCandidatesByParty().get(party).size());
         }
 
-
-        return registrationsByConstituency; // replace by a proper outcome
+        return registrationsByConstituency; // replace by a proper outcome// replace by a proper outcome
     }
 
     /**
@@ -99,12 +105,21 @@ public class Election {
      * @return
      */
     public Set<Candidate> getCandidatesWithDuplicateNames() {
+//        Map<Candidate, Long> map = getAllCandidates().stream()
+//                .collect(Collectors.groupingBy(c ->c.getFullName(), Collectors.counting()));
+//
+//
+//        map.forEach((k, v) -> { if(v == 2) {
+//            System.out.println(k + " : " + v);
+//        }
+//        });
+
         // TODO build the collection of candidates with duplicate names across parties
         //   Hint: There are multiple approaches possible,
         //   if you cannot think of one, read the hints at the bottom of this file.
 
 
-        return null; // replace by a proper outcome
+        return new HashSet<>(); // replace by a proper outcome
     }
 
     /**
@@ -116,8 +131,13 @@ public class Election {
      * @return      the sub set of polling stations within the specified zipCode range
      */
     public Collection<PollingStation> getPollingStationsByZipCodeRange(String firstZipCode, String lastZipCode) {
+        NavigableSet<PollingStation> pollingstations = new TreeSet<>(Comparator.comparing(PollingStation::getZipCode));
+
+        for(Constituency constituency : constituencies){
+            pollingstations.addAll(constituency.getPollingStationsByZipCodeRange(firstZipCode,lastZipCode));
+        }
         // TODO retrieve all polling stations within the area of the given range of zip codes (inclusively)
-        return null; // replace by a proper outcome
+        return pollingstations; // replace by a proper outcome
     }
 
     /**
@@ -128,7 +148,11 @@ public class Election {
 
         // TODO calculate the total number of votes per party
 
-        return null; // replace by a proper outcome
+        Map<Party, Integer> votes = new HashMap<>();
+        for (Constituency constituency: constituencies) {
+            constituency.getVotesByParty().forEach((party, integer) -> votes.merge(party, integer ,Integer::sum));
+        }
+        return votes;
     }
 
     /**
@@ -141,9 +165,15 @@ public class Election {
      */
     public Map<Party, Integer> getVotesByPartyAcrossPollingStations(Collection<PollingStation> pollingStations) {
         // TODO calculate the total number of votes per party across the given polling stations
+        Map<Party, Integer>  votesPerParty = new HashMap<>();
 
+        pollingStations.forEach(pollingStation -> {
+            pollingStation.getVotesByParty().forEach((party, integer) -> {
+                votesPerParty.merge(party,integer, Integer::sum);
+            });
+        });
 
-        return null; // replace by a proper outcome
+        return votesPerParty; // replace by a proper outcome
     }
 
 

@@ -55,14 +55,11 @@ public class Party {
         //  and if that fails then return the existing duplicate instance that is in the set already.
 
         if (candidates.contains(newCandidate)) {
-            Object[] candidatesArray = candidates.toArray();
-
-            for (Object candidate : candidatesArray) {
+            for (Candidate candidate : candidates) {
                 if (candidate.equals(newCandidate)) {
-                    return (Candidate) candidate;
+                    return candidate;
                 }
             }
-
         } else {
             candidates.add(newCandidate);
         }
