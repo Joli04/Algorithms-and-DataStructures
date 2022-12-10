@@ -81,7 +81,9 @@ public class Party {
         Party other = (Party) o;
 
         // TODO provide the equality criterion to identify unique party instances
-
+        if(other.id == this.id && other.hashCode() == this.hashCode()){
+            return true;
+        }
 
         return false; // replace by a proper outcome
     }
@@ -90,8 +92,7 @@ public class Party {
     public int hashCode() {
         // TODO provide a hashCode that is consistent with above equality criterion
 
-
-        return 0; // replace by a proper outcome
+        return getName().hashCode(); // replace by a proper outcome
     }
 
     public int getId() {
