@@ -253,7 +253,8 @@ public class Election {
         Party party = this.getParty(partyId);
         StringBuilder summary = new StringBuilder()
                 .append("\nSummary of ").append(party).append(":\n");
-        summary.append("Total number of candidates = ").append(party.getCandidates().size()).append("\n\n");
+        summary.append("Total number of candidates = ")
+                .append(party.getCandidates().size()).append("\n\n");
         summary.append("Candidates: [").append(party.getCandidates().stream().map(Candidate::toString)
                 .collect(Collectors.joining(","))).append("]\n");
         //We print the total number of registrations

@@ -54,7 +54,7 @@ public class Constituency {
      */
     public boolean register(int rank, Candidate candidate) {
         // Initializing NavigableMap check if the key already have a value assigned
-        NavigableMap<Integer, Candidate> candidates = rankedCandidatesByParty.computeIfAbsent(candidate.getParty(), party -> new TreeMap<>());
+        Map<Integer, Candidate> candidates = rankedCandidatesByParty.computeIfAbsent(candidate.getParty(), party -> new TreeMap<>());
 
         // if the rank or the candidate is already in use/exists return false
         if (candidates.containsKey(rank) || candidates.containsValue(candidate)) {
@@ -104,7 +104,7 @@ public class Constituency {
     public final List<Candidate> getCandidates(Party party) {
         // filter the rankedCandidatesByParty, check if the key value equals the given party
         return this.rankedCandidatesByParty
-                .entrySet().stream().filter(p -> p.getKey().equals(party)).map(Map.Entry::getValue)
+                .entrySet().stream().filter(c -> c.getKey().equals(party)).map(Map.Entry::getValue)
                 .map(NavigableMap::values).findFirst().orElseGet(Collections::emptyList).stream().toList();
     }
 
@@ -116,6 +116,7 @@ public class Constituency {
      */
     public Set<Candidate> getAllCandidates() {
         // go through rankedCandidatesByParty and obtain/collect all the candidates/values
+        System.out.println(rankedCandidatesByParty.values().stream().flatMap(x -> x.values().stream()).collect(Collectors.toSet()));
         return rankedCandidatesByParty.values().stream().flatMap(x -> x.values().stream()).collect(Collectors.toSet());
     }
 
@@ -129,6 +130,10 @@ public class Constituency {
      * @return the sub set of polling stations within the specified zipCode range
      */
     public NavigableSet<PollingStation> getPollingStationsByZipCodeRange(String firstZipCode, String lastZipCode) {
+
+        if(firstZipCode.compareTo(lastZipCode) > 0){
+            throw new IllegalArgumentException("firstzipcode cant be larger than lastZipCode");
+        }
 
         // subset used to check range on zipcodes, second argument set to true(inclusive)
         return pollingStations.subSet(

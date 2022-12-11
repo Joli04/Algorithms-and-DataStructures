@@ -95,7 +95,7 @@ public class Candidate {
 
     @Override
     public int hashCode() {
-        return getFullName().hashCode();
+        return getFullName().hashCode() + getParty().hashCode();
     }
 
     public String getFirstName() {
