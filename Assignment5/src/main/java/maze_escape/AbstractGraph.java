@@ -37,9 +37,15 @@ public abstract class AbstractGraph<V> {
         // TODO calculate recursively the set of all connected vertices that can be reached from the given start vertex
         //  hint: reuse getNeighbours()
 
-        getAllVertices(getNeighbours(firstVertex).stream().reduce(firstVertex, (v, v2) -> v));
-
-        return null;    // replace by a proper outcome
+        Set<V> vertices = new HashSet<>();
+        vertices.add(firstVertex);
+        System.out.println(getNeighbours(firstVertex));
+        for (V vertex : getNeighbours(firstVertex)) {
+            if (vertices.contains(vertex)) {
+                vertices.addAll(getNeighbours(vertex));
+            }
+        }
+        return vertices;
     }
 
 
@@ -63,7 +69,11 @@ public abstract class AbstractGraph<V> {
         //  following a recursive pre-order traversal of a spanning tree
         //  using the above stringBuilder to format the list
         //  hint: use the getNeighbours() method to retrieve the roots of the child subtrees.
-
+        stringBuilder.append(firstVertex).append(": [");
+        for (V v : getNeighbours(firstVertex)) {
+            stringBuilder.append(v).append(",");
+        }
+        stringBuilder.append("]");
 
         // return the result
         return stringBuilder.toString();
@@ -151,8 +161,26 @@ public abstract class AbstractGraph<V> {
      */
     public GPath depthFirstSearch(V startVertex, V targetVertex) {
 
+            Deque<V> stack = new LinkedList<>();
+            stack.push(startVertex);
+            GPath path = new GPath();
+            path.visited.add(startVertex);
+            while (!stack.isEmpty()) {
+                V v = stack.pop();
+                path.vertices.add(v);
+                if (v.equals(targetVertex)) {
+                    return path;
+                }
+                for (V neighbour : getNeighbours(v)) {
+                    if (!path.visited.contains(neighbour)) {
+                        stack.push(neighbour);
+                        path.visited.add(neighbour);
+                    }
+                }
+            }
         if (startVertex == null || targetVertex == null) return null;
 
+        // TODO implement a depth-first search algorithm to find a path from startVertex to targetVertex
         // TODO calculate the path from start to target by recursive depth-first-search
 
         return depthFirstSearch(startVertex, targetVertex, new HashSet<>());
@@ -166,14 +194,12 @@ public abstract class AbstractGraph<V> {
         if (start.equals(target)) {
             Deque<V> path = new LinkedList<>();
             path.addLast(start);
-            return path;
         }
 
         for (V neighbour : this.getNeighbours(start)) {
             Deque<V> path = (Deque<V>) depthFirstSearch(neighbour, target, visited);
             if (path != null) {
                 path.addFirst(start);
-                return path;
             }
         }
         return null;
@@ -192,33 +218,27 @@ public abstract class AbstractGraph<V> {
 
         if (startVertex == null || targetVertex == null) return null;
 
-        // TODO calculate the path from start to target by breadth-first-search
-
-        Deque<V> path = new LinkedList<>();
-        path.addLast(targetVertex);
-        if (startVertex.equals(targetVertex)) return path;
-        Queue<V> fifoQueue = new LinkedList<>();
-        Map<V, V> visitedFrom = new HashMap<>();
-
-        fifoQueue.offer(startVertex);
-        visitedFrom.put(startVertex, null);
-
-        V current = fifoQueue.poll();
-        while (current != null) {
-            for (V neighbour : this.getNeighbours(current)) {
-                if (neighbour.equals(targetVertex)) {
-                    while (current != null) {
-                        path.addFirst(current);
-                        current = visitedFrom.get(current);
-                    }
-                    return path;
-                } else if (!visitedFrom.containsKey(neighbour)){
-                    visitedFrom.put(neighbour, current);
-                    fifoQueue.offer(neighbour);
+        Deque<V> queue = new LinkedList<>();
+        queue.addLast(startVertex);
+        GPath path = new GPath();
+        path.visited.add(startVertex);
+        while (!queue.isEmpty()) {
+            V v = queue.removeFirst();
+            path.vertices.add(v);
+            if (v.equals(targetVertex)) {
+                return path;
+            }
+            for (V neighbour : getNeighbours(v)) {
+                if (!path.visited.contains(neighbour)) {
+                    queue.addLast(neighbour);
+                    path.visited.add(neighbour);
                 }
             }
-            current = fifoQueue.poll();
         }
+        // TODO calculate the path from start to target by breadth-first-search
+
+
+
         return null;    // replace by a proper outcome, if any
     }
 
@@ -252,8 +272,15 @@ public abstract class AbstractGraph<V> {
      * @return the shortest path from startVertex to targetVertex
      * or null if target cannot be matched with a vertex in the sub-graph from startVertex
      */
+    private final Map<V, Map<V,Double>> edges = new HashMap<>();
     public GPath dijkstraShortestPath(V startVertex, V targetVertex,
                                       BiFunction<V, V, Double> weightMapper) {
+
+        V start = startVertex;
+        V target = targetVertex;
+
+
+
 
         if (startVertex == null || targetVertex == null) return null;
 
@@ -283,18 +310,43 @@ public abstract class AbstractGraph<V> {
 
 
         while (nearestMSTNode != null) {
-
             // TODO continue Dijkstra's algorithm to process nearestMSTNode
             //  mark nodes as you find their current shortest path to be final
             //  if you hit the target: complete the path and bail out !!!
             //  register all visited vertices for statistical purposes
-
-
             // TODO find the next nearest MSTNode that is not marked yet
-            nearestMSTNode = null;      // replace by a proper selection
+            nearestMSTNode.marked = true;      // replace by a proper selection
+
+            for (V vertex : getNeighbours(nearestMSTNode.vertex)) {
+                MSTNode neigbourMSTNode = new MSTNode(vertex);
+
+                double distance = weightMapper.apply(this.getEdge(nearestMSTNode.vertex, vertex));
+                neigbourMSTNode.weightSumTo = nearestMSTNode.weightSumTo + distance;
+
+                neigbourMSTNode.parentVertex = nearestMSTNode.vertex;
+
+                if (!minimumSpanningTree.containsKey(vertex) || minimumSpanningTree.get(vertex).weightSumTo >= neigbourMSTNode.weightSumTo) {
+                    minimumSpanningTree.put(vertex, neigbourMSTNode);
+                }
+                path.getVisited().add(vertex);
+
+            }
+            if (nearestMSTNode.vertex.equals(target)) {
+                path.totalWeight = nearestMSTNode.weightSumTo;
+
+                while (nearestMSTNode.vertex != null) {
+                    path.vertices.addFirst(nearestMSTNode.vertex);
+                    nearestMSTNode.vertex = minimumSpanningTree.get(nearestMSTNode.vertex).parentVertex;
+                }
+                return path;
+            }
+            nearestMSTNode = minimumSpanningTree.values().stream().filter(v -> v.marked).min(MSTNode::compareTo).orElse(null);
         }
-
-
         return null;        // replace by a proper outcome, if any
+    }
+    public V getEdge(V fromVertex, V toVertex) {
+        if (fromVertex == null || toVertex == null) return null;
+
+        return this.edges.get(fromVertex).get(toVertex);
     }
 }
