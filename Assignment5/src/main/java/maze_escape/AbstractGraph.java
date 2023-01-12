@@ -85,7 +85,6 @@ public abstract class AbstractGraph<V> {
         }
         stringBuilder.append("]");
         Iterator<V> iterator = getNeighbours(firstVertex).iterator();
-
         while(iterator.hasNext()){
             System.out.println(iterator.next());
         }
