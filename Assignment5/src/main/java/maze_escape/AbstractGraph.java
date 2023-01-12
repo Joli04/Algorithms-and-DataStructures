@@ -45,17 +45,13 @@ public abstract class AbstractGraph<V> {
 
         vertices.add(firstVertex);
 
-        System.out.println(vertices);
         Iterator<V> iterator = vertices.iterator();
-        HashSet<V> test = new HashSet<>();
+        HashSet<V> allVertices = new HashSet<>();
         while(iterator.hasNext()){
-            test.addAll(vertices);
-            test.addAll(getNeighbours(iterator.next()));
+            allVertices.addAll(vertices);
+            allVertices.addAll(getNeighbours(iterator.next()));
         }
-
-        System.out.println("Vertices" + vertices);
-        System.out.println("test" + test);
-        return test;
+        return allVertices;
     }
 
 
@@ -79,16 +75,24 @@ public abstract class AbstractGraph<V> {
         //  following a recursive pre-order traversal of a spanning tree
         //  using the above stringBuilder to format the list
         //  hint: use the getNeighbours() method to retrieve the roots of the child subtrees.
-        stringBuilder.append(firstVertex).append(": [");
-        for (V v : getNeighbours(firstVertex)) {
-            stringBuilder.append(v).append(",");
-        }
-        stringBuilder.append("]");
-        Iterator<V> iterator = getNeighbours(firstVertex).iterator();
-        while(iterator.hasNext()){
-            System.out.println(iterator.next());
-        }
+
+        formatAdjacencyList(firstVertex, stringBuilder);
+
         // return the result
+        return stringBuilder.toString();
+    }
+
+    private String formatAdjacencyList(V vertex, StringBuilder stringBuilder) {
+
+        stringBuilder.append(vertex).append(": ").append(getNeighbours(vertex).toString()
+                .replaceAll("\s+", "")).append("\n");
+
+        getNeighbours(vertex).forEach(v -> {
+            if (!stringBuilder.toString().contains(v.toString()+ ":")) {
+                formatAdjacencyList(v, stringBuilder);
+            }
+        });
+
         return stringBuilder.toString();
     }
 
