@@ -45,17 +45,13 @@ public abstract class AbstractGraph<V> {
 
         vertices.add(firstVertex);
 
-        System.out.println(vertices);
         Iterator<V> iterator = vertices.iterator();
-        HashSet<V> test = new HashSet<>();
+        HashSet<V> allVertices = new HashSet<>();
         while(iterator.hasNext()){
-            test.addAll(vertices);
-            test.addAll(getNeighbours(iterator.next()));
+            allVertices.addAll(vertices);
+            allVertices.addAll(getNeighbours(iterator.next()));
         }
-
-        System.out.println("Vertices" + vertices);
-        System.out.println("test" + test);
-        return test;
+        return allVertices;
     }
 
 
@@ -79,16 +75,24 @@ public abstract class AbstractGraph<V> {
         //  following a recursive pre-order traversal of a spanning tree
         //  using the above stringBuilder to format the list
         //  hint: use the getNeighbours() method to retrieve the roots of the child subtrees.
-        stringBuilder.append(firstVertex).append(": [");
-        for (V v : getNeighbours(firstVertex)) {
-            stringBuilder.append(v).append(",");
-        }
-        stringBuilder.append("]");
-        Iterator<V> iterator = getNeighbours(firstVertex).iterator();
-        while(iterator.hasNext()){
-            System.out.println(iterator.next());
-        }
+
+        formatAdjacencyList(firstVertex, stringBuilder);
+
         // return the result
+        return stringBuilder.toString();
+    }
+
+    private String formatAdjacencyList(V vertex, StringBuilder stringBuilder) {
+
+        stringBuilder.append(vertex).append(": ").append(getNeighbours(vertex).toString()
+                .replaceAll("\s+", "")).append("\n");
+
+        getNeighbours(vertex).forEach(v -> {
+            if (!stringBuilder.toString().contains(v.toString()+ ":")) {
+                formatAdjacencyList(v, stringBuilder);
+            }
+        });
+
         return stringBuilder.toString();
     }
 
@@ -283,15 +287,9 @@ public abstract class AbstractGraph<V> {
      * @return the shortest path from startVertex to targetVertex
      * or null if target cannot be matched with a vertex in the sub-graph from startVertex
      */
-    private final Map<V, Map<V, Double>> edges = new HashMap<>();
-
 
     public GPath dijkstraShortestPath(V startVertex, V targetVertex,
                                       BiFunction<V, V, Double> weightMapper) {
-
-        V start = startVertex;
-        V target = targetVertex;
-
 
         if (startVertex == null || targetVertex == null) return null;
 
@@ -321,8 +319,13 @@ public abstract class AbstractGraph<V> {
 
 
         while (nearestMSTNode != null) {
-            nearestMSTNode.marked = true;
+            // TODO continue Dijkstra's algorithm to process nearestMSTNode
+            //  mark nodes as you find their current shortest path to be final
+            //  if you hit the target: complete the path and bail out !!!
+            //  register all visited vertices for statistical purposes
 
+            // TODO find the next nearest MSTNode that is not marked yet
+            nearestMSTNode.marked = true;
             for (V neighbourVertex : getNeighbours(nearestMSTNode.vertex)) {
                 MSTNode neighborNode = new MSTNode(neighbourVertex);
 
@@ -338,7 +341,7 @@ public abstract class AbstractGraph<V> {
                 path.getVisited().add(neighbourVertex);
             }
 
-            if (nearestMSTNode.vertex.equals(target)) {
+            if (nearestMSTNode.vertex.equals(targetVertex)) {
                 path.totalWeight = nearestMSTNode.weightSumTo;
 
                 while (nearestMSTNode.vertex != null) {
@@ -349,15 +352,8 @@ public abstract class AbstractGraph<V> {
             }
 
             nearestMSTNode = minimumSpanningTree.values().stream().filter(v -> !v.marked).min(MSTNode::compareTo).orElse(null);
-            // TODO continue Dijkstra's algorithm to process nearestMSTNode
-            //  mark nodes as you find their current shortest path to be final
-            //  if you hit the target: complete the path and bail out !!!
-            //  register all visited vertices for statistical purposes
-
-
-            // TODO find the next nearest MSTNode that is not marked yet
         }
-        return null;        // replace by a proper outcome, if any
+        return null;
     }
 
 }
