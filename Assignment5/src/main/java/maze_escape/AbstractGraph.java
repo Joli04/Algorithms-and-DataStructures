@@ -34,26 +34,22 @@ public abstract class AbstractGraph<V> {
      * @return
      */
     public Set<V> getAllVertices(V firstVertex) {
-        // TODO calculate recursively the set of all connected vertices that can be reached from the given start vertex
-        //  hint: reuse getNeighbours()
-
-        Set<V> vertices = new HashSet<>(getNeighbours(firstVertex));
-
-        if(vertices.isEmpty()){
-            vertices = new HashSet<>();
-        }
-
-        vertices.add(firstVertex);
-
-        Iterator<V> iterator = vertices.iterator();
-        HashSet<V> allVertices = new HashSet<>();
-        while(iterator.hasNext()){
-            allVertices.addAll(vertices);
-            allVertices.addAll(getNeighbours(iterator.next()));
-        }
+        Set<V> allVertices = new HashSet<>();
+        //Call the recursive method
+        getAllVertices(firstVertex, allVertices);
         return allVertices;
     }
-
+    private void getAllVertices(V firstVertex, Set<V> allVertices) {
+        //Add the first vertex to the set
+        allVertices.add(firstVertex);
+        //Check all neighbours of firstVertex and for each neighbour check if it is already in allVertices
+        // and if not, add it
+        for (V neighbour : getNeighbours(firstVertex)) {
+            if (!allVertices.contains(neighbour)) {
+                getAllVertices(neighbour, allVertices);
+            }
+        }
+    }
 
     /**
      * Formats the adjacency list of the subgraph starting at the given firstVertex
@@ -69,31 +65,25 @@ public abstract class AbstractGraph<V> {
      * @return
      */
     public String formatAdjacencyList(V firstVertex) {
+        //Create a StringBuilder
         StringBuilder stringBuilder = new StringBuilder("Graph adjacency list:\n");
-
-        // TODO recursively build the adjacency list including all vertices that can be reached from firstVertex
-        //  following a recursive pre-order traversal of a spanning tree
-        //  using the above stringBuilder to format the list
-        //  hint: use the getNeighbours() method to retrieve the roots of the child subtrees.
-
+        //Call the recursive method
         formatAdjacencyList(firstVertex, stringBuilder);
-
         // return the result
         return stringBuilder.toString();
     }
 
-    private String formatAdjacencyList(V vertex, StringBuilder stringBuilder) {
-
+    private void formatAdjacencyList(V vertex, StringBuilder stringBuilder) {
+        //Add the vertex to the string, with a colon and neighbours in brackets
         stringBuilder.append(vertex).append(": ").append(getNeighbours(vertex).toString()
                 .replaceAll("\s+", "")).append("\n");
 
-        getNeighbours(vertex).forEach(v -> {
-            if (!stringBuilder.toString().contains(v.toString()+ ":")) {
-                formatAdjacencyList(v, stringBuilder);
+        //Check all neighbours of vertex and for each neighbour check if it is already in allVertices
+        for(V neighbour : getNeighbours(vertex)){
+            if (!stringBuilder.toString().contains(neighbour.toString()+ ":")) {
+                formatAdjacencyList(neighbour, stringBuilder);
             }
-        });
-
-        return stringBuilder.toString();
+        }
     }
 
 
@@ -179,22 +169,20 @@ public abstract class AbstractGraph<V> {
     public GPath depthFirstSearch(V startVertex, V targetVertex) {
 
         if (startVertex == null || targetVertex == null) return null;
+        //Create a new path
         GPath path = new GPath();
-
-        // TODO implement a depth-first search algorithm to find a path from startVertex to targetVertex
-        // TODO calculate the path from start to target by recursive depth-first-search
-
         return depthFirstSearch(startVertex, targetVertex, path);
-
-//        return null;    // replace by a proper outcome, if any
     }
 
     private GPath depthFirstSearch(V startVertex, V targetVertex, GPath path) {
+        //Check if our path already contains the startVertex
         if (path.getVisited().contains(startVertex)){
             return null;
         }
+        //Add the startVertex to the path
         path.getVisited().add(startVertex);
 
+        //Check if the startVertex is the targetVertex and add the vertices to the path and return the path
         if (startVertex.equals(targetVertex)) {
             path.getVertices().add(startVertex);
             return path;
@@ -207,6 +195,7 @@ public abstract class AbstractGraph<V> {
                 return currentPath;
             }
         }
+        //Return null if we found no path from the startVertex to the targetVertex
         return null;
     }
 
@@ -227,6 +216,7 @@ public abstract class AbstractGraph<V> {
         Queue<V> queue = new LinkedList<>();
         path.visited.add(startVertex);
 
+        //Check if the startVertex is the targetVertex and add the vertices to the path and return the path
         if (startVertex.equals(targetVertex)) {
             path.vertices.add(targetVertex);
             return path;
@@ -315,16 +305,7 @@ public abstract class AbstractGraph<V> {
         nearestMSTNode.weightSumTo = 0.0;
         minimumSpanningTree.put(startVertex, nearestMSTNode);
 
-        // TODO maybe more helper variables or data structures, if needed
-
-
         while (nearestMSTNode != null) {
-            // TODO continue Dijkstra's algorithm to process nearestMSTNode
-            //  mark nodes as you find their current shortest path to be final
-            //  if you hit the target: complete the path and bail out !!!
-            //  register all visited vertices for statistical purposes
-
-            // TODO find the next nearest MSTNode that is not marked yet
             nearestMSTNode.marked = true;
             for (V neighbourVertex : getNeighbours(nearestMSTNode.vertex)) {
                 MSTNode neighborNode = new MSTNode(neighbourVertex);
@@ -334,7 +315,8 @@ public abstract class AbstractGraph<V> {
 
                 neighborNode.parentVertex = nearestMSTNode.vertex;
 
-                if (!minimumSpanningTree.containsKey(neighbourVertex) || minimumSpanningTree.get(neighbourVertex).weightSumTo >= neighborNode.weightSumTo) {
+                if (!minimumSpanningTree.containsKey(neighbourVertex) ||
+                        minimumSpanningTree.get(neighbourVertex).weightSumTo >= neighborNode.weightSumTo) {
                     minimumSpanningTree.put(neighbourVertex, neighborNode);
                 }
 
@@ -351,7 +333,8 @@ public abstract class AbstractGraph<V> {
                 return path;
             }
 
-            nearestMSTNode = minimumSpanningTree.values().stream().filter(v -> !v.marked).min(MSTNode::compareTo).orElse(null);
+            nearestMSTNode = minimumSpanningTree.values()
+                    .stream().filter(v -> !v.marked).min(MSTNode::compareTo).orElse(null);
         }
         return null;
     }
